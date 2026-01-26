@@ -1,0 +1,4 @@
+127.0.0.1 - - [26/Jan/2026 10:42:37] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jan/2026 10:42:39] "GET /luoc_do_tran_rach_gam__xoai_mut__400.jpg.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jan/2026 10:42:39] "GET /nh.mp4 HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jan/2026 10:42:39] "GET /speech%202.mp3 HTTP/1.1" 200 -

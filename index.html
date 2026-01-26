@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HÀO KHÍ TÂY SƠN: RẠCH GẦM 1785</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Framer Motion -->
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+
+    <style>
+        :root {
+            --color-dark: #0a0a0a;
+            --color-gold: #d4af37;
+            --color-crimson: #dc143c;
+            --color-white: #f5f5f5;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-dark);
+            color: var(--color-white);
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--color-gold);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            object-fit: cover;
+            filter: brightness(0.4);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            text-shadow: 0 0 20px rgba(0,0,0,0.8);
+            border-bottom: 2px solid var(--color-crimson);
+            padding-bottom: 1rem;
+            display: inline-block;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-top: 1rem;
+            color: var(--color-white);
+            letter-spacing: 4px;
+        }
+
+        /* Audio Player UI */
+        .audio-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--color-gold);
+            color: var(--color-gold);
+            padding: 10px;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .audio-control:hover {
+            background: var(--color-gold);
+            color: var(--color-dark);
+        }
+
+        /* Content Sections */
+        .section {
+            padding: 100px 0;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            border-left: 5px solid var(--color-crimson);
+            padding-left: 20px;
+        }
+
+        .map-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin: 40px 0;
+        }
+
+        .map-image {
+            max-width: 100%;
+            border: 2px solid var(--color-gold);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+        }
+
+        .text-content {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: justify;
+        }
+
+        .enable-audio-prompt {
+             position: fixed;
+             bottom: 80px;
+             right: 20px;
+             background: var(--color-crimson);
+             padding: 10px 20px;
+             border-radius: 5px;
+             color: white;
+             z-index: 99;
+             box-shadow: 0 0 10px rgba(0,0,0,0.5);
+             font-family: 'Montserrat', sans-serif;
+             font-size: 0.9rem;
+             cursor: pointer;
+             animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        const { motion } = window.Motion;
+
+        // Icons
+        const SpeakerOn = () => (
+             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+        );
+
+        const SpeakerOff = () => (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+        );
+
+        // FadeSection Component
+        const FadeSection = ({ children, delay = 0 }) => {
+            return (
+                <motion.div
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 0.8, delay, ease: "easeOut" }}
+                >
+                    {children}
+                </motion.div>
+            );
+        };
+
+        // AudioPlayer Component
+        const AudioPlayer = () => {
+            const [isPlaying, setIsPlaying] = useState(false);
+            const [hasInteracted, setHasInteracted] = useState(false);
+            const audioRef = useRef(null);
+
+            useEffect(() => {
+                const audio = audioRef.current;
+
+                const tryPlay = async () => {
+                    try {
+                        await audio.play();
+                        setIsPlaying(true);
+                        setHasInteracted(true);
+                    } catch (err) {
+                        console.log("Autoplay blocked, waiting for interaction");
+                        setIsPlaying(false);
+                    }
+                };
+
+                tryPlay();
+            }, []);
+
+            const togglePlay = () => {
+                const audio = audioRef.current;
+                if (isPlaying) {
+                    audio.pause();
+                } else {
+                    audio.play();
+                }
+                setIsPlaying(!isPlaying);
+                setHasInteracted(true);
+            };
+
+            return (
+                <>
+                    <audio
+                        ref={audioRef}
+                        src="./speech 2.mp3"
+                        loop
+                    />
+                    <button
+                        className="audio-control"
+                        onClick={togglePlay}
+                        title={isPlaying ? "Mute Narration" : "Play Narration"}
+                    >
+                        {isPlaying ? <SpeakerOn /> : <SpeakerOff />}
+                    </button>
+                    {!hasInteracted && !isPlaying && (
+                         <div className="enable-audio-prompt" onClick={togglePlay}>
+                             Kích hoạt âm thanh / Enable Audio
+                         </div>
+                    )}
+                </>
+            );
+        };
+
+        const Hero = () => {
+            return (
+                <section className="hero">
+                    <video
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        src="./nh.mp4"
+                    >
+                        Your browser does not support the video tag.
+                    </video>
+                    <div className="hero-content">
+                        <FadeSection>
+                            <h1 className="hero-title">HÀO KHÍ TÂY SƠN</h1>
+                            <div className="hero-subtitle">RẠCH GẦM 1785</div>
+                        </FadeSection>
+                    </div>
+                </section>
+            );
+        };
+
+        const MapSection = () => {
+            return (
+                <section className="section">
+                    <div className="container">
+                        <FadeSection>
+                            <h2 className="section-title">Chiến Địa / The Battlefield</h2>
+                            <div className="text-content">
+                                <p>
+                                    Trận Rạch Gầm - Xoài Mút là một trong những trận thủy chiến lẫy lừng nhất trong lịch sử chống ngoại xâm của dân tộc Việt Nam.
+                                    Dưới sự chỉ huy tài tình của Nguyễn Huệ, quân Tây Sơn đã lợi dụng địa thế hiểm trở của đoạn sông Rạch Gầm - Xoài Mút
+                                    để đánh tan 5 vạn quân Xiêm - Nguyễn chỉ trong một ngày.
+                                </p>
+                            </div>
+                        </FadeSection>
+
+                        <FadeSection delay={0.3}>
+                            <div className="map-container">
+                                <img
+                                    src="./luoc_do_tran_rach_gam__xoai_mut__400.jpg.jpg"
+                                    alt="Lược đồ trận Rạch Gầm - Xoài Mút"
+                                    className="map-image"
+                                />
+                            </div>
+                            <div className="text-content" style={{textAlign: 'center', fontSize: '0.9rem', color: '#aaa'}}>
+                                <em>Lược đồ diễn biến trận đánh</em>
+                            </div>
+                        </FadeSection>
+                    </div>
+                </section>
+            );
+        };
+
+        const Footer = () => (
+             <footer style={{padding: '50px 0', textAlign: 'center', borderTop: '1px solid var(--color-gold)', color: '#888'}}>
+                <p>© 2023 Hào Khí Tây Sơn Presentation</p>
+             </footer>
+        );
+
+        const App = () => {
+            return (
+                <div>
+                    <Hero />
+                    <MapSection />
+                    <Footer />
+                    <AudioPlayer />
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
