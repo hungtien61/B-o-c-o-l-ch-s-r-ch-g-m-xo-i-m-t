@@ -3,188 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HÀO KHÍ TÂY SƠN: RẠCH GẦM 1785</title>
+    <title>DECODED 1785: RẠCH GẦM - XOÀI MÚT</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
 
-    <!-- React & ReactDOM -->
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        void: '#050505',
+                        gold: '#C5A059',
+                        blood: '#8A0303',
+                    },
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        sans: ['"Montserrat"', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- React & Libraries -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-
-    <!-- Babel -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-    <!-- Framer Motion -->
     <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
 
     <style>
-        :root {
-            --color-dark: #0a0a0a;
-            --color-gold: #d4af37;
-            --color-crimson: #dc143c;
-            --color-white: #f5f5f5;
-        }
-
         body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--color-dark);
-            color: var(--color-white);
-            font-family: 'Montserrat', sans-serif;
-            overflow-x: hidden;
+            background-color: #050505;
+            color: #f5f5f5;
         }
 
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Cormorant Garamond', serif;
-            color: var(--color-gold);
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Hero Section */
-        .hero {
-            position: relative;
-            height: 100vh;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .hero video {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            transform: translate(-50%, -50%);
-            z-index: 1;
-            object-fit: cover;
-            filter: brightness(0.4);
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-        }
-
-        .hero-title {
-            font-size: 4rem;
-            text-shadow: 0 0 20px rgba(0,0,0,0.8);
-            border-bottom: 2px solid var(--color-crimson);
-            padding-bottom: 1rem;
-            display: inline-block;
-        }
-
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2.5rem;
-            }
-        }
-
-        .hero-subtitle {
-            font-size: 1.5rem;
-            margin-top: 1rem;
-            color: var(--color-white);
-            letter-spacing: 4px;
-        }
-
-        /* Audio Player UI */
-        .audio-control {
+        /* Film Grain */
+        .film-grain {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 100;
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid var(--color-gold);
-            color: var(--color-gold);
-            padding: 10px;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 40;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Vignette */
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 30;
+            background: radial-gradient(circle, rgba(5,5,5,0) 50%, rgba(5,5,5,0.9) 100%);
+        }
+
+        /* Radar Grid for Map */
+        .radar-grid {
+            background-image:
+                linear-gradient(rgba(197, 160, 89, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(197, 160, 89, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #C5A059; border-radius: 3px; }
+
+        /* Custom Range Slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: #C5A059;
             cursor: pointer;
-            transition: all 0.3s ease;
+            margin-top: -8px;
+            box-shadow: 0 0 10px rgba(197, 160, 89, 0.8);
         }
-
-        .audio-control:hover {
-            background: var(--color-gold);
-            color: var(--color-dark);
-        }
-
-        /* Content Sections */
-        .section {
-            padding: 100px 0;
-            min-height: 80vh;
-            display: flex;
-            align-items: center;
-        }
-
-        .section-title {
-            font-size: 3rem;
-            margin-bottom: 2rem;
-            text-align: center;
-            border-left: 5px solid var(--color-crimson);
-            padding-left: 20px;
-        }
-
-        .map-container {
+        input[type=range]::-webkit-slider-runnable-track {
             width: 100%;
-            display: flex;
-            justify-content: center;
-            margin: 40px 0;
-        }
-
-        .map-image {
-            max-width: 100%;
-            border: 2px solid var(--color-gold);
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
-        }
-
-        .text-content {
-            font-size: 1.2rem;
-            line-height: 1.8;
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: justify;
-        }
-
-        .enable-audio-prompt {
-             position: fixed;
-             bottom: 80px;
-             right: 20px;
-             background: var(--color-crimson);
-             padding: 10px 20px;
-             border-radius: 5px;
-             color: white;
-             z-index: 99;
-             box-shadow: 0 0 10px rgba(0,0,0,0.5);
-             font-family: 'Montserrat', sans-serif;
-             font-size: 0.9rem;
-             cursor: pointer;
-             animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+            height: 4px;
+            cursor: pointer;
+            background: #333;
+            border-radius: 2px;
         }
     </style>
 </head>
@@ -192,52 +105,67 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
-        const { motion } = window.Motion;
+        const { useState, useEffect, useRef, useMemo } = React;
+        const { motion, AnimatePresence, useSpring, useTransform, useMotionValue } = window.Motion;
 
-        // Icons
-        const SpeakerOn = () => (
-             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-        );
-
-        const SpeakerOff = () => (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
-        );
-
-        // FadeSection Component
-        const FadeSection = ({ children, delay = 0 }) => {
-            return (
-                <motion.div
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.8, delay, ease: "easeOut" }}
-                >
-                    {children}
-                </motion.div>
-            );
+        // --- ASSET MANAGEMENT ---
+        const ASSETS = {
+            heroVideo: './hero.mp4',
+            audio: './speech 2.mp3',
+            map: './luoc do.jpg', // Checking file list: luoc do.jpg
+            fallbacks: {
+                heroVideo: 'https://images.unsplash.com/photo-1551556729-17d4722c6642?q=80&w=2070&auto=format&fit=crop',
+                map: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Map_of_Battle_of_Rach_Gam-Xoai_Mut.svg/1200px-Map_of_Battle_of_Rach_Gam-Xoai_Mut.svg.png'
+            }
         };
 
-        // AudioPlayer Component
+        // --- UTILS ---
+        const Counter = ({ from, to }) => {
+            const nodeRef = useRef();
+
+            useEffect(() => {
+                const node = nodeRef.current;
+                const controls = { value: from };
+
+                // Simple animation frame loop or use Framer Motion's animate
+                // Using setInterval for simplicity in CDN env without complex setup
+                let startTimestamp = null;
+                const duration = 2000;
+
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    const current = Math.floor(progress * (to - from) + from);
+                    if (node) node.textContent = current.toLocaleString();
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    }
+                };
+
+                window.requestAnimationFrame(step);
+            }, [from, to]);
+
+            return <span ref={nodeRef} />;
+        };
+
+        // --- COMPONENTS ---
+
         const AudioPlayer = () => {
             const [isPlaying, setIsPlaying] = useState(false);
-            const [hasInteracted, setHasInteracted] = useState(false);
+            const [needsInteraction, setNeedsInteraction] = useState(false);
             const audioRef = useRef(null);
 
             useEffect(() => {
                 const audio = audioRef.current;
-
+                audio.volume = 0.5;
                 const tryPlay = async () => {
                     try {
                         await audio.play();
                         setIsPlaying(true);
-                        setHasInteracted(true);
-                    } catch (err) {
-                        console.log("Autoplay blocked, waiting for interaction");
-                        setIsPlaying(false);
+                    } catch (e) {
+                        setNeedsInteraction(true);
                     }
                 };
-
                 tryPlay();
             }, []);
 
@@ -249,100 +177,357 @@
                     audio.play();
                 }
                 setIsPlaying(!isPlaying);
-                setHasInteracted(true);
+                setNeedsInteraction(false);
             };
 
             return (
                 <>
-                    <audio
-                        ref={audioRef}
-                        src="./speech 2.mp3"
-                        loop
-                    />
-                    <button
-                        className="audio-control"
+                    <audio ref={audioRef} src={ASSETS.audio} loop />
+
+                    <motion.button
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
                         onClick={togglePlay}
-                        title={isPlaying ? "Mute Narration" : "Play Narration"}
+                        className={`fixed bottom-8 right-8 z-50 w-16 h-16 rounded-full flex items-center justify-center border-2 border-gold bg-black/80 text-gold shadow-[0_0_20px_rgba(197,160,89,0.3)] transition-all ${needsInteraction ? 'animate-pulse' : ''}`}
                     >
-                        {isPlaying ? <SpeakerOn /> : <SpeakerOff />}
-                    </button>
-                    {!hasInteracted && !isPlaying && (
-                         <div className="enable-audio-prompt" onClick={togglePlay}>
-                             Kích hoạt âm thanh / Enable Audio
-                         </div>
-                    )}
+                        {needsInteraction ? (
+                            <span className="text-[10px] font-bold text-center leading-tight">CLICK<br/>START</span>
+                        ) : (
+                            isPlaying ? (
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                            ) : (
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+                            )
+                        )}
+                    </motion.button>
                 </>
             );
         };
 
         const Hero = () => {
+            const title = "QUANG TRUNG";
+            const letters = title.split("");
+
             return (
-                <section className="hero">
-                    <video
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        src="./nh.mp4"
+                <section className="relative h-screen w-full overflow-hidden flex items-center justify-center">
+                    <div className="absolute inset-0 z-0">
+                        <video
+                            className="w-full h-full object-cover opacity-60"
+                            autoPlay muted loop playsInline
+                            onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }}
+                        >
+                            <source src={ASSETS.heroVideo} type="video/mp4" />
+                        </video>
+                        <img
+                            src={ASSETS.fallbacks.heroVideo}
+                            className="w-full h-full object-cover hidden opacity-60"
+                            alt="Hero Fallback"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-void via-void/50 to-transparent"></div>
+                    </div>
+
+                    <div className="relative z-10 text-center px-4">
+                        <div className="overflow-hidden mb-4">
+                            <motion.h1
+                                className="font-serif text-6xl md:text-9xl font-bold text-gold tracking-widest uppercase drop-shadow-[0_5px_15px_rgba(0,0,0,0.8)]"
+                            >
+                                {letters.map((letter, index) => (
+                                    <motion.span
+                                        key={index}
+                                        initial={{ y: 100, opacity: 0 }}
+                                        animate={{ y: 0, opacity: 1 }}
+                                        transition={{ delay: index * 0.1, duration: 0.8, ease: "easeOut" }}
+                                        className="inline-block"
+                                    >
+                                        {letter === " " ? "\u00A0" : letter}
+                                    </motion.span>
+                                ))}
+                            </motion.h1>
+                        </div>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 1.5, duration: 1 }}
+                            className="font-sans text-xl tracking-[0.5em] text-white/80 border-t border-crimson inline-block pt-4"
+                        >
+                            DECODED 1785: RẠCH GẦM - XOÀI MÚT
+                        </motion.div>
+                    </div>
+
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 2, duration: 1, repeat: Infinity, repeatType: "reverse" }}
+                        className="absolute bottom-10 left-1/2 -translate-x-1/2 text-gold/50 text-sm tracking-widest"
                     >
-                        Your browser does not support the video tag.
-                    </video>
-                    <div className="hero-content">
-                        <FadeSection>
-                            <h1 className="hero-title">HÀO KHÍ TÂY SƠN</h1>
-                            <div className="hero-subtitle">RẠCH GẦM 1785</div>
-                        </FadeSection>
-                    </div>
+                        SCROLL TO DECODE
+                    </motion.div>
                 </section>
             );
         };
 
-        const MapSection = () => {
+        const PhysicsOfWar = () => {
+            const [tide, setTide] = useState(100); // 0 to 100
+
+            // Derived values
+            const waterHeight = 20 + (tide / 100) * 60; // 20% to 80%
+            const shipRotation = tide < 30 ? (30 - tide) * 1.5 : 0; // Rotate if tide < 30
+            const isCritical = tide < 30;
+
             return (
-                <section className="section">
-                    <div className="container">
-                        <FadeSection>
-                            <h2 className="section-title">Chiến Địa / The Battlefield</h2>
-                            <div className="text-content">
-                                <p>
-                                    Trận Rạch Gầm - Xoài Mút là một trong những trận thủy chiến lẫy lừng nhất trong lịch sử chống ngoại xâm của dân tộc Việt Nam.
-                                    Dưới sự chỉ huy tài tình của Nguyễn Huệ, quân Tây Sơn đã lợi dụng địa thế hiểm trở của đoạn sông Rạch Gầm - Xoài Mút
-                                    để đánh tan 5 vạn quân Xiêm - Nguyễn chỉ trong một ngày.
-                                </p>
-                            </div>
-                        </FadeSection>
-
-                        <FadeSection delay={0.3}>
-                            <div className="map-container">
-                                <img
-                                    src="./luoc_do_tran_rach_gam__xoai_mut__400.jpg.jpg"
-                                    alt="Lược đồ trận Rạch Gầm - Xoài Mút"
-                                    className="map-image"
+                <section className="py-24 px-4 max-w-6xl mx-auto">
+                    <div className="flex flex-col md:flex-row gap-12 items-center">
+                        <div className="flex-1 space-y-6">
+                            <h2 className="font-serif text-4xl md:text-5xl text-gold border-l-4 border-blood pl-6">
+                                ĐỊA MẠO HỌC &<br/>THỦY ĐỘNG LỰC HỌC
+                            </h2>
+                            <p className="font-sans text-lg text-gray-300 leading-relaxed text-justify">
+                                Khúc sông Rạch Gầm - Xoài Mút có đặc điểm <strong>"Hiệu ứng Cổ chai" (Venturi Effect)</strong>.
+                                Khi nước rút, dòng chảy bị co hẹp đột ngột, làm tăng vận tốc dòng nước và tạo ra các xoáy nước cục bộ.
+                            </p>
+                            <div className="bg-void/50 border border-gold/20 p-6 rounded-lg">
+                                <label className="block text-sm font-bold text-gold mb-4 uppercase tracking-wider">
+                                    Mô phỏng Thủy triều (Tide Simulator)
+                                </label>
+                                <input
+                                    type="range"
+                                    min="0" max="100"
+                                    value={tide}
+                                    onChange={(e) => setTide(Number(e.target.value))}
+                                    className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
                                 />
+                                <div className="flex justify-between text-xs text-gray-500 mt-2">
+                                    <span>Thấp (Low Tide)</span>
+                                    <span>Cao (High Tide)</span>
+                                </div>
                             </div>
-                            <div className="text-content" style={{textAlign: 'center', fontSize: '0.9rem', color: '#aaa'}}>
-                                <em>Lược đồ diễn biến trận đánh</em>
+
+                            <AnimatePresence>
+                                {isCritical && (
+                                    <motion.div
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: 'auto' }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                        className="bg-blood/20 border border-blood text-blood p-4 rounded flex items-center gap-3"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                                        <span className="font-bold">CẢNH BÁO: NƯỚC RÚT - VẬN TỐC TĂNG. TÀU ĐỊCH MẮC CẠN.</span>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+
+                        <div className="flex-1 w-full aspect-square relative bg-[#0a0f14] border-2 border-gold/30 rounded-xl overflow-hidden shadow-2xl">
+                            {/* Cross Section Visualization */}
+                            <svg className="w-full h-full" viewBox="0 0 400 400">
+                                {/* Sky/Background */}
+                                <rect x="0" y="0" width="400" height="400" fill="#0F172A" />
+
+                                {/* River Bed */}
+                                <path d="M0 300 C 100 350, 300 350, 400 300 L 400 400 L 0 400 Z" fill="#332918" />
+
+                                {/* Water */}
+                                <motion.rect
+                                    x="0"
+                                    animate={{ y: 400 - (waterHeight / 100 * 300) }} // Base height calc
+                                    width="400"
+                                    height="400"
+                                    fill="rgba(30, 64, 175, 0.6)"
+                                />
+
+                                {/* Enemy Ship 1 */}
+                                <motion.g
+                                    initial={{ x: 150, y: 180 }}
+                                    animate={{
+                                        y: 400 - (waterHeight / 100 * 300) - 40, // Float on water
+                                        rotate: -shipRotation
+                                    }}
+                                >
+                                    <path d="M0,0 L60,0 L50,30 L10,30 Z" fill="#8A0303" />
+                                    <rect x="25" y="-30" width="10" height="30" fill="#555" />
+                                    <path d="M25,-30 L55,-15 L25,-10 Z" fill="#8A0303" />
+                                </motion.g>
+
+                                {/* Enemy Ship 2 */}
+                                <motion.g
+                                    initial={{ x: 220, y: 180 }}
+                                    animate={{
+                                        y: 400 - (waterHeight / 100 * 300) - 35,
+                                        rotate: shipRotation
+                                    }}
+                                >
+                                    <path d="M0,0 L50,0 L40,25 L10,25 Z" fill="#8A0303" />
+                                    <rect x="20" y="-25" width="8" height="25" fill="#555" />
+                                    <path d="M20,-25 L45,-10 L20,-5 Z" fill="#8A0303" />
+                                </motion.g>
+                            </svg>
+
+                            <div className="absolute top-4 left-4 text-xs font-mono text-gold/50">
+                                SIMULATION: CROSS-SECTION
                             </div>
-                        </FadeSection>
+                        </div>
                     </div>
                 </section>
             );
         };
 
-        const Footer = () => (
-             <footer style={{padding: '50px 0', textAlign: 'center', borderTop: '1px solid var(--color-gold)', color: '#888'}}>
-                <p>© 2023 Hào Khí Tây Sơn Presentation</p>
-             </footer>
-        );
+        const TacticalMap = () => {
+            const [mode, setMode] = useState('real'); // real | radar
+            const [activeHotspot, setActiveHotspot] = useState(null);
+
+            const hotspots = [
+                { id: 1, x: 30, y: 40, title: "Phục Binh", desc: "Quân Tây Sơn mai phục trong các nhánh sông nhỏ." },
+                { id: 2, x: 60, y: 50, title: "Hỏa Công", desc: "Sử dụng bè lửa thả trôi xuôi dòng đốt cháy tàu địch." },
+                { id: 3, x: 45, y: 30, title: "Chặn Đầu", desc: "Cù lao Thới Sơn - Điểm chốt chặn quan trọng." }
+            ];
+
+            return (
+                <section className="py-24 bg-void relative">
+                    <div className="max-w-6xl mx-auto px-4">
+                        <div className="flex justify-between items-end mb-8">
+                            <h2 className="font-serif text-4xl text-gold">BẢN ĐỒ CHIẾN THUẬT</h2>
+                            <button
+                                onClick={() => setMode(mode === 'real' ? 'radar' : 'real')}
+                                className="flex items-center gap-2 px-6 py-2 border border-gold text-gold hover:bg-gold hover:text-void transition-colors uppercase tracking-widest font-bold text-sm"
+                            >
+                                {mode === 'real' ? 'BẬT RADAR MODE' : 'BẬT REAL MAP'}
+                            </button>
+                        </div>
+
+                        <div className="relative w-full aspect-[16/9] border border-gold/30 bg-black overflow-hidden group">
+                            {/* Map Content */}
+                            <AnimatePresence mode="wait">
+                                {mode === 'real' ? (
+                                    <motion.img
+                                        key="real"
+                                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                                        src={ASSETS.map}
+                                        onError={(e) => e.target.src = ASSETS.fallbacks.map}
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <motion.div
+                                        key="radar"
+                                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                                        className="w-full h-full radar-grid relative"
+                                    >
+                                        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-green-900/20 pointer-events-none"></div>
+                                        {/* Stylized geometric river representation could go here */}
+                                        <svg className="absolute inset-0 w-full h-full opacity-30" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                            <path d="M0,40 Q30,60 60,40 T100,50" fill="none" stroke="#C5A059" strokeWidth="1" />
+                                            <path d="M0,45 Q30,65 60,45 T100,55" fill="none" stroke="#C5A059" strokeWidth="1" />
+                                        </svg>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+
+                            {/* Hotspots */}
+                            {hotspots.map(spot => (
+                                <motion.div
+                                    key={spot.id}
+                                    className="absolute w-6 h-6 -ml-3 -mt-3 cursor-pointer z-20"
+                                    style={{ left: `${spot.x}%`, top: `${spot.y}%` }}
+                                    onMouseEnter={() => setActiveHotspot(spot.id)}
+                                    onMouseLeave={() => setActiveHotspot(null)}
+                                >
+                                    <span className="absolute inset-0 rounded-full bg-crimson animate-ping opacity-75"></span>
+                                    <span className="relative block w-6 h-6 bg-blood rounded-full border-2 border-white"></span>
+
+                                    {/* Tooltip */}
+                                    <AnimatePresence>
+                                        {activeHotspot === spot.id && (
+                                            <motion.div
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: 10 }}
+                                                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 w-64 bg-black/90 border border-gold p-4 text-center pointer-events-none"
+                                            >
+                                                <h4 className="text-gold font-serif font-bold text-lg mb-1">{spot.title}</h4>
+                                                <p className="text-white text-xs font-sans">{spot.desc}</p>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const ComparisonDashboard = () => {
+            return (
+                <section className="py-24 bg-[#080808]">
+                    <div className="max-w-4xl mx-auto px-4">
+                        <h2 className="font-serif text-4xl text-center text-gold mb-16">TƯƠNG QUAN LỰC LƯỢNG</h2>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+                            {/* Enemy */}
+                            <div className="text-center">
+                                <div className="text-blood font-serif text-2xl mb-4">LIÊN QUÂN XIÊM - NGUYỄN</div>
+                                <div className="text-6xl font-bold font-sans text-white mb-2">
+                                    <Counter from={0} to={50000} />
+                                </div>
+                                <div className="text-gray-500 text-sm tracking-widest uppercase mb-6">Quân Lính</div>
+                                <div className="h-4 w-full bg-gray-800 rounded-full overflow-hidden">
+                                    <motion.div
+                                        initial={{ width: 0 }}
+                                        whileInView={{ width: '100%' }}
+                                        transition={{ duration: 1.5, ease: "easeOut" }}
+                                        className="h-full bg-blood"
+                                    ></motion.div>
+                                </div>
+                            </div>
+
+                            {/* Hero */}
+                            <div className="text-center">
+                                <div className="text-gold font-serif text-2xl mb-4">QUÂN TÂY SƠN</div>
+                                <div className="text-6xl font-bold font-sans text-white mb-2">
+                                    <Counter from={0} to={20000} />
+                                </div>
+                                <div className="text-gray-500 text-sm tracking-widest uppercase mb-6">Quân Lính</div>
+                                <div className="h-4 w-full bg-gray-800 rounded-full overflow-hidden">
+                                    <motion.div
+                                        initial={{ width: 0 }}
+                                        whileInView={{ width: '40%' }} // 20k is 40% of 50k
+                                        transition={{ duration: 1.5, ease: "easeOut" }}
+                                        className="h-full bg-gold"
+                                    ></motion.div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
 
         const App = () => {
             return (
-                <div>
+                <main className="relative min-h-screen">
+                    <div className="film-grain"></div>
+                    <div className="vignette"></div>
+
                     <Hero />
-                    <MapSection />
-                    <Footer />
+
+                    <div className="max-w-3xl mx-auto py-16 px-6 text-center">
+                        <p className="font-serif text-2xl md:text-3xl italic text-gold/80 leading-relaxed">
+                            "Đánh cho để dài tóc, đánh cho để đen răng. <br/>
+                            Đánh cho nó chích luân bất phản, đánh cho nó phiến giáp bất hoàn."
+                        </p>
+                    </div>
+
+                    <PhysicsOfWar />
+                    <TacticalMap />
+                    <ComparisonDashboard />
+
+                    <footer className="py-12 text-center text-gray-600 text-sm border-t border-gray-900 mt-12">
+                        <p>© 2024 DECODED SERIES. Historical Data Visualization.</p>
+                    </footer>
+
                     <AudioPlayer />
-                </div>
+                </main>
             );
         };
 
