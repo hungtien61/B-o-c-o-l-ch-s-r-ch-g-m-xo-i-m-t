@@ -1,348 +1,2105 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HÀO KHÍ TÂY SƠN: RẠCH GẦM 1785</title>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
-
-    <!-- React & ReactDOM -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-
-    <!-- Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-    <!-- Framer Motion -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
 
-    <style>
-        :root {
-            --color-dark: #0a0a0a;
-            --color-gold: #d4af37;
-            --color-crimson: #dc143c;
-            --color-white: #f5f5f5;
-        }
+    <!-- MediaPipe Hands (Module) -->
+    <script type="module">
+        import { FilesetResolver, HandLandmarker } from "https://cdn.skypack.dev/@mediapipe/tasks-vision@0.10.0";
+        window.FilesetResolver = FilesetResolver;
+        window.HandLandmarker = HandLandmarker;
+        window.MediaPipeReady = true;
+        console.log("MediaPipe Modules Loaded Successfully");
+    </script>
 
+    <!-- 1. THAY THẾ TOÀN BỘ PHẦN FONTS VÀ STYLE TRONG THẺ HEAD -->
+
+    <!-- Google Fonts: Cormorant Garamond (Sử thi) & Montserrat (Hiện đại) & Cinzel Decorative (Tiêu đề rực lửa) -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;700&family=Cinzel+Decorative:wght@400;700;900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'royal-gold': '#F4C430', // Vàng kim loại sáng hơn
+                        'blood-red': '#8a0303',
+                        'ink-black': '#050a0e',
+                        'paper': '#f4e4bc',
+                    },
+                    fontFamily: {
+                        'epic': ['"Cormorant Garamond"', 'serif'], // Font văn bản
+                        'cinzel': ['"Cinzel Decorative"', 'cursive'], // Font tiêu đề chính
+                        'body': ['"Montserrat"', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'paper-texture': "url('https://www.transparenttextures.com/patterns/aged-paper.png')",
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'shine': 'shine 3s linear infinite', // Hiệu ứng quét sáng
+                    },
+                    keyframes: {
+                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
+                        shine: { '0%': { backgroundPosition: '-200% center' }, '100%': { backgroundPosition: '200% center' } }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
         body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--color-dark);
-            color: var(--color-white);
-            font-family: 'Montserrat', sans-serif;
+            background-color: #050505;
+            color: #f4e4bc;
             overflow-x: hidden;
         }
 
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Cormorant Garamond', serif;
-            color: var(--color-gold);
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+        /* Hiệu ứng chữ vàng kim loại (Metallic Gold) */
+        .text-gold-gradient {
+            background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 200% auto;
+            animation: shine 5s linear infinite;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
+        /* Removed vignette for cleaner look */
 
-        /* Hero Section */
-        .hero {
+        .text-glow-container {
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.9);
             position: relative;
-            height: 100vh;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
+            z-index: 51;
         }
 
-        .hero video {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            transform: translate(-50%, -50%);
-            z-index: 1;
-            object-fit: cover;
-            filter: brightness(0.4);
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
         }
 
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            text-align: center;
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
         }
 
-        .hero-title {
-            font-size: 4rem;
-            text-shadow: 0 0 20px rgba(0,0,0,0.8);
-            border-bottom: 2px solid var(--color-crimson);
-            padding-bottom: 1rem;
-            display: inline-block;
-        }
-
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2.5rem;
-            }
-        }
-
-        .hero-subtitle {
-            font-size: 1.5rem;
-            margin-top: 1rem;
-            color: var(--color-white);
-            letter-spacing: 4px;
-        }
-
-        /* Audio Player UI */
-        .audio-control {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 100;
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid var(--color-gold);
-            color: var(--color-gold);
-            padding: 10px;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .audio-control:hover {
-            background: var(--color-gold);
-            color: var(--color-dark);
-        }
-
-        /* Content Sections */
-        .section {
-            padding: 100px 0;
-            min-height: 80vh;
-            display: flex;
-            align-items: center;
-        }
-
-        .section-title {
-            font-size: 3rem;
-            margin-bottom: 2rem;
-            text-align: center;
-            border-left: 5px solid var(--color-crimson);
-            padding-left: 20px;
-        }
-
-        .map-container {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            margin: 40px 0;
-        }
-
-        .map-image {
-            max-width: 100%;
-            border: 2px solid var(--color-gold);
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
-        }
-
-        .text-content {
-            font-size: 1.2rem;
-            line-height: 1.8;
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: justify;
-        }
-
-        .enable-audio-prompt {
-             position: fixed;
-             bottom: 80px;
-             right: 20px;
-             background: var(--color-crimson);
-             padding: 10px 20px;
-             border-radius: 5px;
-             color: white;
-             z-index: 99;
-             box-shadow: 0 0 10px rgba(0,0,0,0.5);
-             font-family: 'Montserrat', sans-serif;
-             font-size: 0.9rem;
-             cursor: pointer;
-             animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        ::-webkit-scrollbar-thumb {
+            background: #b38728;
+            border-radius: 4px;
         }
     </style>
 </head>
+
 <body>
     <div id="root"></div>
 
+
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
-        const { motion } = window.Motion;
 
-        // Icons
-        const SpeakerOn = () => (
-             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-        );
-
-        const SpeakerOff = () => (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
-        );
-
-        // FadeSection Component
-        const FadeSection = ({ children, delay = 0 }) => {
+        // Sửa đoạn này để tránh lỗi undefined dẫn đến màn hình đen
+        const motion = window.Motion.motion;
+        const AnimatePresence = window.Motion.AnimatePresence;
+        const useMotionValue = window.Motion.useMotionValue;
+        const useTransform = window.Motion.useTransform;
+        // --- CẤU HÌNH TÀI NGUYÊN (Đã cập nhật đúng tên file bạn cần) ---
+        const ASSETS = {
+            HERO_VIDEO: "./nh.mp4",   // Video nền (Phải để cùng thư mục với file html)
+            AUDIO_SPEECH: "./speech 2.mp3", // File âm thanh câu nói (Phải để cùng thư mục)
+            MAP_REAL: "luoc do.jpg",
+            DRAGON_PATTERN: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Dong_Son_drum_tympanum.svg/1024px-Dong_Son_drum_tympanum.svg.png"
+        };
+        // --- COMPONENT MỚI: THANH TIẾN TRÌNH (Tăng tính chuyên nghiệp) ---
+        const ScrollProgress = () => {
+            const [width, setWidth] = useState(0);
+            useEffect(() => {
+                const handleScroll = () => {
+                    const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+                    const progress = (window.scrollY / totalHeight) * 100;
+                    setWidth(progress);
+                };
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
             return (
-                <motion.div
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.8, delay, ease: "easeOut" }}
-                >
-                    {children}
-                </motion.div>
+                <div className="fixed top-0 left-0 h-1 bg-gradient-to-r from-[#d4af37] via-[#fcf6ba] to-[#d4af37] z-[100] transition-all duration-100 ease-out shadow-[0_0_10px_#d4af37]"></div>
             );
         };
 
-        // AudioPlayer Component
+        // --- COMPONENT MỚI: TRÌNH PHÁT ÂM THANH (Audio Player) ---
+        // --- COMPONENT: TRÌNH PHÁT ÂM THANH (Cơ chế Smart Autoplay) ---
+        // --- COMPONENT: TRÌNH PHÁT ÂM THANH (Xử lý lỗi chặn Autoplay) ---
         const AudioPlayer = () => {
-            const [isPlaying, setIsPlaying] = useState(false);
-            const [hasInteracted, setHasInteracted] = useState(false);
+            const [playing, setPlaying] = useState(false);
             const audioRef = useRef(null);
 
             useEffect(() => {
-                const audio = audioRef.current;
-
+                // Hàm thử phát âm thanh
                 const tryPlay = async () => {
-                    try {
-                        await audio.play();
-                        setIsPlaying(true);
-                        setHasInteracted(true);
-                    } catch (err) {
-                        console.log("Autoplay blocked, waiting for interaction");
-                        setIsPlaying(false);
+                    if (audioRef.current) {
+                        try {
+                            await audioRef.current.play();
+                            setPlaying(true);
+                        } catch (err) {
+                            console.log("Trình duyệt chặn autoplay. Đang chờ tương tác...");
+                        }
                     }
                 };
 
                 tryPlay();
+
+                // Lắng nghe cú nhấp chuột đầu tiên của người dùng để mở khóa âm thanh
+                const unlockAudio = () => {
+                    if (audioRef.current && audioRef.current.paused) {
+                        audioRef.current.play();
+                        setPlaying(true);
+                    }
+                    // Sau khi đã phát, gỡ bỏ sự kiện này để tối ưu
+                    window.removeEventListener('click', unlockAudio);
+                    window.removeEventListener('keydown', unlockAudio);
+                };
+
+                window.addEventListener('click', unlockAudio);
+                window.addEventListener('keydown', unlockAudio); // Bấm phím cũng mở khóa
+
+                return () => {
+                    window.removeEventListener('click', unlockAudio);
+                    window.removeEventListener('keydown', unlockAudio);
+                };
             }, []);
 
-            const togglePlay = () => {
-                const audio = audioRef.current;
-                if (isPlaying) {
-                    audio.pause();
+            const toggle = () => {
+                if (playing) {
+                    audioRef.current.pause();
+                    setPlaying(false);
                 } else {
-                    audio.play();
+                    audioRef.current.play();
+                    setPlaying(true);
                 }
-                setIsPlaying(!isPlaying);
-                setHasInteracted(true);
             };
 
             return (
-                <>
-                    <audio
-                        ref={audioRef}
-                        src="./speech 2.mp3"
-                        loop
-                    />
-                    <button
-                        className="audio-control"
-                        onClick={togglePlay}
-                        title={isPlaying ? "Mute Narration" : "Play Narration"}
-                    >
-                        {isPlaying ? <SpeakerOn /> : <SpeakerOff />}
-                    </button>
-                    {!hasInteracted && !isPlaying && (
-                         <div className="enable-audio-prompt" onClick={togglePlay}>
-                             Kích hoạt âm thanh / Enable Audio
-                         </div>
+                <div className="fixed bottom-6 right-6 z-[90] flex flex-col items-end gap-2">
+                    {/* Thông báo nhắc người dùng nếu nhạc chưa chạy */}
+                    {!playing && (
+                        <div className="bg-blood-red text-white text-[10px] px-3 py-1 border border-royal-gold rounded animate-bounce font-bold">
+                            NHẤP CHUỘT ĐỂ NGHE HỊCH 🔊
+                        </div>
                     )}
+                    <button
+                        onClick={toggle}
+                        className={`w-14 h-14 rounded-full border-2 border-royal-gold flex items-center justify-center transition-all shadow-[0_0_20px_#d4af37] ${playing ? 'bg-royal-gold text-black animate-[spin_10s_linear_infinite]' : 'bg-black/90 text-royal-gold hover:scale-110'}`}
+                    >
+                        <audio ref={audioRef} src={ASSETS.AUDIO_SPEECH} loop />
+                        <span className="material-symbols-outlined text-2xl">{playing ? 'volume_up' : 'play_arrow'}</span>
+                    </button>
+                </div>
+            );
+        };
+
+        // --- COMPONENT MỚI: HIỆU ỨNG CUỘN (Scroll Reveal) ---
+        // Dùng để bọc các nội dung quan trọng, giúp chúng hiện ra mượt mà khi cuộn tới
+        const FadeSection = ({ children }) => {
+            const ref = useRef(null);
+            const [visible, setVisible] = useState(false);
+
+            useEffect(() => {
+                const observer = new IntersectionObserver(([entry]) => {
+                    if (entry.isIntersecting) setVisible(true);
+                }, { threshold: 0.1 });
+                if (ref.current) observer.observe(ref.current);
+                return () => observer.disconnect();
+            }, []);
+
+            return (
+                <div ref={ref} className={`transition-all duration-1000 transform ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}>
+                    {children}
+                </div>
+            );
+        };
+        // --- COMPONENT: HERO SECTION (Trang chủ) ---
+        // --- COMPONENT: HERO SECTION (Trang chủ) ---
+        // --- COMPONENT: HERO SECTION (Video Nền) ---
+        // --- COMPONENT: HERO SECTION (Video Nền) ---
+        // --- 3. THAY THẾ TOÀN BỘ COMPONENT HERO CŨ BẰNG ĐOẠN NÀY ---
+        const Hero = () => {
+            const videoRef = useRef(null);
+            const { scrollY } = window.Motion.useScroll();
+            const y1 = window.Motion.useTransform(scrollY, [0, 500], [0, 200]);
+            const y2 = window.Motion.useTransform(scrollY, [0, 500], [0, -150]);
+            const opacity = window.Motion.useTransform(scrollY, [0, 300], [1, 0]);
+
+            useEffect(() => {
+                if (videoRef.current) {
+                    videoRef.current.defaultMuted = true;
+                    videoRef.current.muted = true;
+                    videoRef.current.play().catch(e => console.log("Video autoplay blocked:", e));
+                }
+            }, []);
+
+            return (
+                <section className="relative h-screen flex items-center justify-center overflow-hidden bg-ink-black">
+                    {/* Video Nền - Parallax Layer Back */}
+                    <motion.div style={{ y: y1 }} className="absolute inset-0 z-0">
+                        <video
+                            ref={videoRef} autoPlay loop muted playsInline
+                            className="w-full h-full object-cover filter brightness-[0.5] contrast-110"
+                            onTimeUpdate={(e) => {
+                                if (e.target.currentTime >= 32) {
+                                    e.target.currentTime = 0;
+                                }
+                            }}
+                        >
+                            <source src={ASSETS.HERO_VIDEO} type="video/mp4" />
+                        </video>
+                        <div className="absolute inset-0 bg-gradient-to-t from-ink-black via-transparent to-black/60"></div>
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#000000_100%)] opacity-70"></div>
+                    </motion.div>
+
+                    {/* Nội dung chính - Parallax Layer Front */}
+                    <motion.div
+                        style={{ y: y2, opacity }}
+                        className="relative z-10 text-center px-4 flex flex-col items-center"
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}
+                            className="border-y border-royal-gold/50 py-2 px-8 mb-6 bg-black/40 backdrop-blur-sm"
+                        >
+                            <span className="text-royal-gold font-body tracking-[0.5em] text-xs md:text-sm uppercase font-bold">Đại Phá Quân Xiêm // 1785</span>
+                        </motion.div>
+
+                        <motion.h1
+                            initial={{ scale: 0.9, opacity: 0, y: 0 }}
+                            animate={{
+                                scale: 1,
+                                opacity: 1,
+                                y: [0, -10, 0],
+                                textShadow: [
+                                    "0 0 20px rgba(197, 160, 89, 0.3)",
+                                    "0 0 50px rgba(197, 160, 89, 0.6)",
+                                    "0 0 20px rgba(197, 160, 89, 0.3)"
+                                ],
+                                filter: ["brightness(1)", "brightness(1.3)", "brightness(1)"]
+                            }}
+                            transition={{
+                                scale: { duration: 1.2, delay: 0.2 },
+                                opacity: { duration: 1.2, delay: 0.2 },
+                                y: { duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1.4 },
+                                textShadow: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1.4 },
+                                filter: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1.4 }
+                            }}
+                            className="text-[13vw] md:text-[10vw] font-cinzel font-black text-transparent bg-clip-text bg-gradient-to-b from-[#FFF5C3] via-[#D4AF37] to-[#8B6C42] leading-none drop-shadow-[0_10px_10px_rgba(0,0,0,0.8)] mb-4 tracking-wide z-20 relative whitespace-nowrap"
+                        >
+                            QUANG TRUNG
+                            {/* Lớp phủ hiệu ứng lửa/kim loại */}
+                            <span className="absolute inset-0 block text-transparent bg-clip-text bg-gradient-to-t from-transparent via-white/30 to-transparent animate-shine pointer-events-none" style={{ backgroundSize: '200% auto' }}>QUANG TRUNG</span>
+                        </motion.h1>
+
+                        <motion.h2
+                            initial={{ opacity: 0, y: 0 }}
+                            animate={{
+                                opacity: 1,
+                                y: [0, -10, 0]
+                            }}
+                            transition={{
+                                opacity: { duration: 1, delay: 0.8 },
+                                y: { duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1.8 }
+                            }}
+                            className="text-2xl md:text-5xl font-epic text-white italic tracking-wider opacity-90"
+                        >
+                            Nguyễn Huệ
+                        </motion.h2>
+
+                        <motion.div
+                            initial={{ width: 0 }} animate={{ width: "100px" }} transition={{ duration: 1, delay: 1 }}
+                            className="h-1 bg-gradient-to-r from-transparent via-royal-gold to-transparent my-8"
+                        ></motion.div>
+
+                        <motion.p
+                            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 1.2 }}
+                            className="max-w-3xl mx-auto text-gray-300 font-body text-base md:text-xl leading-relaxed font-light"
+                        >
+                            "Đánh cho để dài tóc, đánh cho để đen răng.<br />
+                            Đánh cho nó chích luân bất phản, đánh cho nó phiến giáp bất hoàn."
+                        </motion.p>
+
+                        <motion.div
+                            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2 }}
+                            className="mt-16 animate-bounce"
+                        >
+                            <span className="material-symbols-outlined text-royal-gold/80 text-5xl">keyboard_double_arrow_down</span>
+                        </motion.div>
+                    </motion.div>
+                </section>
+            );
+        };
+        // --- COMPONENT: BẢN ĐỒ CHIẾN LƯỢC (Map) ---
+        const StrategyMap = () => {
+            return (
+                <section className="py-20 px-4 bg-ink-black relative border-t border-royal-gold/30">
+                    <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-12 items-center">
+
+                        {/* Cột Thông tin (Bên trái) - Đã thêm z-[51] để nổi lên trên lớp vignette tối */}
+                        <div className="md:w-1/3 space-y-8 text-left relative z-[51]">
+                            <h3 className="text-4xl font-epic text-royal-gold border-l-4 border-blood-red pl-4">
+                                THẾ TRẬN<br />THIÊN LA ĐỊA VÕNG
+                            </h3>
+                            <p className="font-poetry text-gray-400 text-lg text-justify">
+                                Dòng sông Tiền đoạn qua Rạch Gầm - Xoài Mút rộng lớn nhưng hiểm trở. Nguyễn Huệ đã biến địa hình tự nhiên thành một "túi đựng quân" khổng lồ.
+                            </p>
+
+                            <ul className="space-y-4">
+                                {[
+                                    { title: "Nghi Binh", desc: "Dùng thuyền nhỏ khiêu chiến, giả thua để dụ địch vào sâu." },
+                                    { title: "Khóa Đuôi", desc: "Thủy triều xuống, thuyền lớn của Xiêm bị mắc cạn và dồn ứ." },
+                                    { title: "Hỏa Công", desc: "Thuyền bè lửa xuôi dòng thiêu rụi hạm đội địch." }
+                                ].map((item, idx) => (
+                                    <li key={idx} className="flex gap-4 group cursor-pointer hover:bg-white/5 p-2 rounded transition-all">
+                                        <div className="w-10 h-10 flex items-center justify-center border border-royal-gold rounded-full text-royal-gold font-bold font-epic group-hover:bg-royal-gold group-hover:text-black transition-all">
+                                            {idx + 1}
+                                        </div>
+                                        <div>
+                                            <h4 className="text-white font-bold font-epic group-hover:text-royal-gold transition-colors">{item.title}</h4>
+                                            <p className="text-sm text-gray-500">{item.desc}</p>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        {/* Cột Bản đồ (Bên phải) */}
+                        <div className="md:w-2/3 relative group">
+                            <div className="absolute -inset-2 bg-gradient-to-r from-royal-gold via-red-500 to-royal-gold rounded opacity-30 blur-xl group-hover:opacity-75 transition duration-1000 animate-pulse"></div>
+
+                            <div className="relative border-4 border-double border-yellow-900 bg-paper p-2 shadow-2xl rounded overflow-hidden">
+                                <motion.div
+                                    className="absolute inset-0 z-20 pointer-events-none"
+                                    initial={{ opacity: 0 }}
+                                    whileHover={{ opacity: 1 }}
+                                >
+                                    {/* Interactive Spots Overlay */}
+                                    <div className="absolute top-[30%] left-[40%] w-32 h-32 border-2 border-red-500 rounded-full animate-ping opacity-50"></div>
+                                    <div className="absolute top-[50%] right-[30%] w-24 h-24 border-2 border-royal-gold rounded-full animate-ping opacity-50 animation-delay-500"></div>
+                                </motion.div>
+
+                                <img
+                                    src={ASSETS.MAP_REAL}
+                                    alt="Lược đồ Trận Rạch Gầm - Xoài Mút"
+                                    className="w-full h-auto object-contain hover:scale-105 transition-transform duration-1000 ease-out"
+                                    onError={(e) => {
+                                        e.target.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Tran_Rach_Gam_-_Xoai_Mut.svg/1920px-Tran_Rach_Gam_-_Xoai_Mut.svg.png";
+                                    }}
+                                />
+                                <div className="absolute bottom-4 right-4 bg-black/70 px-3 py-1 text-xs font-mono text-royal-gold border border-royal-gold/50 rounded z-20 backdrop-blur">
+                                    LƯỢC ĐỒ GỐC 1785 // HOVER TO ANALYZE
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // --- COMPONENT: THỐNG KÊ (Stats) ---
+        // --- COMPONENT: THỐNG KÊ (Stats - Đã sửa lỗi hiển thị) ---
+        const Stats = () => (
+            <section className="py-16 bg-blood-red/10 border-y border-royal-gold/20 relative overflow-hidden">
+                <img src={ASSETS.DRAGON_PATTERN} className="absolute top-0 right-0 w-96 opacity-5 rotate-12 -mr-20 -mt-20 pointer-events-none" />
+                <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-center relative z-10">
+
+                    {/* Cột 1 */}
+                    <div>
+                        <div className="text-5xl font-epic font-black text-white mb-2">5 VẠN</div>
+                        <div className="text-sm font-poetry text-royal-gold tracking-widest uppercase">Quân Xiêm Xâm Lược</div>
+                    </div>
+
+                    {/* Cột 2 (Giữa) - Đã sửa lỗi gạch giữa & màu tối */}
+                    <div className="relative">
+                        {/* Đường kẻ bên trái (ngăn cách với cột 1) */}
+                        <div className="absolute left-0 top-2 bottom-2 w-[1px] bg-royal-gold/30 hidden md:block"></div>
+
+                        {/* Chữ chuyển sang màu đỏ tươi (red-500) + Hiệu ứng phát sáng (drop-shadow) */}
+                        <div className="text-5xl font-epic font-black text-red-500 mb-2 drop-shadow-[0_0_15px_rgba(220,38,38,0.8)]">1 NGÀY</div>
+                        <div className="text-sm font-poetry text-royal-gold tracking-widest uppercase">Thời Gian Quét Sạch</div>
+
+                        {/* Đường kẻ bên phải (ngăn cách với cột 3) */}
+                        <div className="absolute right-0 top-2 bottom-2 w-[1px] bg-royal-gold/30 hidden md:block"></div>
+                    </div>
+
+                    {/* Cột 3 */}
+                    <div>
+                        <div className="text-5xl font-epic font-black text-white mb-2">300+</div>
+                        <div className="text-sm font-poetry text-royal-gold tracking-widest uppercase">Chiến Thuyền Bị Phá</div>
+                    </div>
+                </div>
+            </section>
+        );
+        // --- COMPONENT MỚI: DÒNG CHẢY LỊCH SỬ (Timeline) ---
+        // --- COMPONENT MỚI: DÒNG CHẢY LỊCH SỬ (Timeline - Chuẩn Cinematic) ---
+        // --- COMPONENT MỚI: DÒNG CHẢY LỊCH SỬ (BẢN FIX LỖI LAYOUT) ---
+        // --- COMPONENT MỚI: DÒNG CHẢY LỊCH SỬ (BẢN FIX LỖI DUPLICATE) ---
+        const Timeline = () => {
+            const events = [
+                { time: "Đêm 19/01", title: "Bố Trận Bí Mật", desc: "Quân Tây Sơn lợi dụng màn đêm, bí mật di chuyển pháo binh hạng nặng lên cù lao Thới Sơn và ẩn quân vào các ngách sông rạch chằng chịt." },
+                { time: "Rạng Sáng 20/01", title: "Khiêu Chiến Dụ Địch", desc: "Nguyễn Huệ chỉ phái một toán thuyền nhẹ ra đánh nhử. Quân Xiêm cậy đông, kiêu ngạo đuổi theo mà không biết đang đi vào cửa tử." },
+                { time: "Sáng 20/01", title: "Khóa Chặt Đường Lui", desc: "Khi toàn bộ hạm đội Xiêm lọt vào Rạch Gầm, pháo hiệu nổ vang. Thuyền chiến Tây Sơn từ các nhánh tắt lao ra bịt kín hai đầu sông." },
+                { time: "Giờ Ngọ 20/01", title: "Hỏa Công Hủy Diệt", desc: "Nước triều rút mạnh đúng như tính toán. Thuyền Xiêm to lớn mắc cạn, va vào nhau loạn xạ. Bè lửa xuôi dòng thiêu rụi tất cả." }
+            ];
+
+            return (
+                <section className="py-24 px-4 bg-[#050a0e] relative overflow-hidden group">
+                    {/* Fire Atmosphere */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none">
+                        <EmberParticles />
+                        <div className="absolute inset-0 bg-red-900/10 mix-blend-overlay"></div>
+                    </div>
+
+                    {/* Nền họa tiết mờ */}
+                    <div className="absolute inset-0 pointer-events-none opacity-5" style={{ backgroundImage: `url(${ASSETS.DRAGON_PATTERN})`, backgroundSize: '500px' }}></div>
+
+                    <div className="max-w-5xl mx-auto relative z-10">
+                        <div className="text-center mb-16">
+                            <span className="text-royal-gold font-bold tracking-[0.3em] uppercase text-sm">Hành Trình Chiến Thắng</span>
+                            <h3 className="text-4xl md:text-5xl font-epic font-black mt-2 text-white uppercase text-gold-glow drop-shadow-[0_0_15px_rgba(255,0,0,0.5)]">
+                                Diễn Biến Trận Đánh
+                            </h3>
+                        </div>
+
+                        <div className="relative">
+                            {/* TRỤC GIỮA (Chỉ hiện trên Desktop) */}
+                            <div className="hidden md:block absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-royal-gold/10 via-royal-gold/50 to-royal-gold/10 shadow-[0_0_15px_#d4af37] z-0"></div>
+
+                            <div className="space-y-12 md:space-y-0">
+                                {events.map((e, i) => {
+                                    const isEven = i % 2 === 0;
+                                    return (
+                                        <div key={i} className="relative md:flex md:items-center md:justify-between md:min-h-[180px]">
+
+                                            {/* NỘI DUNG BÊN TRÁI (Hiện khi index chẵn trên desktop) */}
+                                            <div className={`md:w-5/12 ${isEven ? 'md:text-right md:pr-12' : 'md:invisible'}`}>
+                                                {isEven && <TimelineCard event={e} align="right" />}
+                                            </div>
+
+                                            {/* ĐIỂM MỐC TRÒN GIỮA (Chỉ hiện trên Desktop) */}
+                                            <div className="hidden md:flex md:w-2/12 justify-center relative z-10">
+                                                <div className="w-6 h-6 bg-blood-red border-4 border-royal-gold rounded-full shadow-[0_0_20px_#d4af37] relative">
+                                                    <div className="absolute inset-0 bg-royal-gold animate-ping opacity-50 rounded-full"></div>
+                                                </div>
+                                            </div>
+
+                                            {/* NỘI DUNG BÊN PHẢI (Hiện khi index lẻ trên desktop) */}
+                                            <div className={`md:w-5/12 ${!isEven ? 'md:text-left md:pl-12' : 'md:invisible'}`}>
+                                                {!isEven && <TimelineCard event={e} align="left" />}
+                                            </div>
+
+                                            {/* HIỂN THỊ MOBILE (Dạng danh sách dọc đơn giản) */}
+                                            <div className="md:hidden relative pl-8 border-l-2 border-royal-gold/30 ml-4">
+                                                <div className="absolute -left-[9px] top-6 w-4 h-4 bg-blood-red border-2 border-royal-gold rounded-full"></div>
+                                                <TimelineCard event={e} align="left" mobile={true} />
+                                            </div>
+
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // Component con TimelineCard (Chỉ khai báo MỘT LẦN ở đây)
+        const TimelineCard = ({ event, align, mobile = false }) => (
+            <div className={`group bg-[#0a1016] border border-royal-gold/20 p-6 rounded-lg hover:bg-blood-red/10 hover:border-royal-gold/60 transition-all duration-500 relative shadow-lg ${mobile ? 'mb-8' : ''}`}>
+                {!mobile && (
+                    <div className={`hidden md:block absolute top-1/2 -translate-y-1/2 w-0 h-0 border-y-[10px] border-y-transparent transition-all duration-500
+                ${align === 'right'
+                            ? '-right-[10px] border-l-[10px] border-l-royal-gold/20 group-hover:border-l-royal-gold/60'
+                            : '-left-[10px] border-r-[10px] border-r-royal-gold/20 group-hover:border-r-royal-gold/60'
+                        }
+            `}></div>
+                )}
+                <span className="text-royal-gold font-mono text-sm tracking-wider border border-royal-gold/40 bg-black/50 px-3 py-1 rounded inline-block mb-3 shadow-sm">
+                    {event.time}
+                </span>
+                <h4 className="text-2xl font-epic font-bold text-white mb-3 group-hover:text-royal-gold transition-colors">{event.title}</h4>
+                <p className="font-body text-gray-400 text-sm leading-relaxed text-justify opacity-90 group-hover:opacity-100 group-hover:text-gray-300">
+                    {event.desc}
+                </p>
+            </div>
+        );
+
+        // --- COMPONENT MỚI: SỨC MẠNH TÂY SƠN (Vũ Khí) ---
+        // --- COMPONENT MỚI: SỨC MẠNH TÂY SƠN (Vũ Khí - Có Hình Ảnh) ---
+        // --- COMPONENT: SỨC MẠNH TÂY SƠN (Sử dụng ảnh Local) ---
+        const Arsenal = () => {
+            // Dữ liệu vũ khí đã cập nhật đường dẫn file ảnh trên máy
+            const weapons = [
+                {
+                    name: "Hỏa Hổ",
+                    type: "Vũ Khí Bí Mật",
+                    desc: "Loại ống phun lửa cầm tay, khắc tinh của thuyền gỗ và đội hình dày đặc. Gây hoảng loạn tột độ.",
+                    // Ảnh file: hc.png
+                    img: "./hc.png"
+                },
+                {
+                    name: "Đại Bác",
+                    type: "Hỏa Lực Hạng Nặng",
+                    desc: "Được bố trí trên cao tại các cù lao, bắn đạn xuyên phá từ trên xuống, nghiền nát tàu địch.",
+                    // Ảnh file: db.png
+                    img: "./db.png"
+                },
+                {
+                    name: "Thuyền Ô",
+                    type: "Cơ Động Tốc Độ",
+                    desc: "Thuyền sơn đen, nhỏ gọn, luồn lách cực nhanh trong vùng nước hẹp để tập kích bất ngờ.",
+                    // Ảnh file: to.png
+                    img: "./to.png"
+                }
+            ];
+
+            return (
+                <section className="py-24 bg-paper-texture bg-paper text-ink-black relative border-y-[12px] border-double border-ink-black/80">
+                    <div className="max-w-6xl mx-auto px-4">
+                        <div className="text-center mb-16">
+                            <span className="text-blood-red font-bold tracking-[0.3em] uppercase text-sm">Khoa Học Quân Sự</span>
+                            <h3 className="text-4xl md:text-6xl font-epic font-black mt-2 uppercase drop-shadow-lg">Sức Mạnh Tây Sơn</h3>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+                            {weapons.map((w, i) => (
+                                <div key={i} className="group relative bg-white/60 backdrop-blur-md p-4 pb-8 border-2 border-ink-black hover:-translate-y-3 transition-all duration-500 shadow-[0_10px_30px_rgba(0,0,0,0.2)] overflow-hidden rounded-lg">
+
+                                    {/* Phần hình ảnh */}
+                                    {/* Phần hình ảnh */}
+                                    <div className="relative h-64 mb-6 overflow-hidden rounded border border-ink-black/20 group-hover:border-royal-gold/50 transition-all bg-black/10">
+                                        <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-all z-10"></div>
+
+                                        {/* Fallback Text (Hidden underneath the image, revealed if image hides itself) */}
+                                        <div className="absolute inset-0 flex items-center justify-center p-4 text-center z-0">
+                                            <span className="text-red-500 font-bold font-mono text-sm">
+                                                IMAGE NOT FOUND<br />{w.img}
+                                            </span>
+                                        </div>
+
+                                        {/* Thẻ img sử dụng đường dẫn local */}
+                                        <img
+                                            src={w.img}
+                                            alt={w.name}
+                                            className="relative z-20 w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000 filter sepia-[0.3] contrast-125"
+                                            onError={(e) => {
+                                                // SAFE FALLBACK: Just hide the broken image so the text below shows up.
+                                                // NO innerHTML manipulation to avoid React crash.
+                                                e.target.style.display = 'none';
+                                            }}
+                                        />
+                                        <div className="absolute top-2 right-2 bg-blood-red text-royal-gold p-2 rounded-full z-30 shadow-lg">
+                                            <span className="material-symbols-outlined text-xl">
+                                                {i === 0 ? 'local_fire_department' : i === 1 ? 'mode_fan' : 'sailing'}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* Phần nội dung */}
+                                    <div className="text-center relative z-20 px-2">
+                                        <h4 className="text-3xl font-epic font-bold mb-1 group-hover:text-blood-red transition-colors">{w.name}</h4>
+                                        <span className="text-ink-black/70 font-mono text-xs uppercase font-bold block mb-4 tracking-wider">{w.type}</span>
+                                        <p className="font-body text-base leading-relaxed text-ink-black/80 italic">"{w.desc}"</p>
+                                    </div>
+
+                                    {/* Hiệu ứng viền vàng khi hover */}
+                                    <div className="absolute inset-0 border-2 border-transparent group-hover:border-royal-gold/60 rounded-lg transition-all duration-500 pointer-events-none"></div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+        // --- COMPONENT MỚI 1: MÔ PHỎNG THỦY TRIỀU (Interactive) ---
+        // --- COMPONENT MỚI: MÔ PHỎNG THỦY - ĐỊA CHIẾN THUẬT ---
+        // --- COMPONENT: MÔ PHỎNG THỦY - ĐỊA CHIẾN THUẬT (BẢN CINEMATIC) ---
+        // --- COMPONENT: MÔ PHỎNG THỦY - ĐỊA CHIẾN THUẬT (BẢN FIX LỖI XOAY) ---
+        // --- HELPER: TẠO ÂM THANH VA CHẠM (Synthetic Audio) ---
+        const playCrunchSound = () => {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContext) return;
+
+            const ctx = new AudioContext();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+
+            // Tạo tiếng ồn (Noise) giả lập tiếng gỗ gãy
+            const bufferSize = ctx.sampleRate * 0.5; // 0.5 giây
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+
+            const noise = ctx.createBufferSource();
+            noise.buffer = buffer;
+
+            // Lọc âm thanh để nghe ầm ầm hơn (Lowpass)
+            const filter = ctx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.value = 1000;
+
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(ctx.destination);
+
+            // Envelope (Giảm dần âm lượng)
+            gain.gain.setValueAtTime(1, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+
+            noise.start();
+
+            // Thêm một tiếng "Bíp" trầm để tạo độ nặng
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(100, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(10, ctx.currentTime + 0.5);
+            osc.connect(gain);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.5);
+        };
+
+        // --- HELPER: TIẾNG LỬA CHÁY (Fire Sound) ---
+        const playFireSound = () => {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContext) return;
+            const ctx = new AudioContext();
+
+            // Tạo tiếng nổ lép bép
+            const bufferSize = ctx.sampleRate * 2; // 2 giây
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+
+            for (let i = 0; i < bufferSize; i++) {
+                // Brown noise cho tiếng cháy
+                const white = Math.random() * 2 - 1;
+                data[i] = (0 + (2 * white)) / 2; // Simple approximation
+
+                // Thỉnh thoảng thêm tiếng nổ (Pop)
+                if (Math.random() > 0.99) {
+                    data[i] += 0.5 * (Math.random() > 0.5 ? 1 : -1);
+                }
+            }
+
+            const noise = ctx.createBufferSource();
+            noise.buffer = buffer;
+            noise.loop = true;
+
+            const filter = ctx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.value = 800;
+
+            const gain = ctx.createGain();
+            gain.gain.value = 0.5;
+
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(ctx.destination);
+            noise.start();
+
+            // Dừng sau 5 giây (hết intro)
+            setTimeout(() => {
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 1);
+                noise.stop(ctx.currentTime + 1);
+            }, 6000);
+        };
+
+        // --- COMPONENT: IntroParticles (Canvas optimized for Fire/Embers) ---
+        const IntroParticles = () => {
+            const canvasRef = useRef(null);
+
+            useEffect(() => {
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
+                let width = canvas.width = window.innerWidth;
+                let height = canvas.height = window.innerHeight;
+
+                const particles = [];
+                const particleCount = 150;
+
+                class Particle {
+                    constructor() {
+                        this.reset();
+                        this.y = Math.random() * height; // Start anywhere
+                    }
+
+                    reset() {
+                        this.x = Math.random() * width;
+                        this.y = height + Math.random() * 100;
+                        this.vx = (Math.random() - 0.5) * 1;
+                        this.vy = -(Math.random() * 2 + 1);
+                        this.size = Math.random() * 3 + 1;
+                        this.alpha = Math.random() * 0.5 + 0.5;
+                        this.color = `rgba(255, ${Math.floor(Math.random() * 100 + 50)}, 0, ${this.alpha})`;
+                        this.life = Math.random() * 100;
+                    }
+
+                    update() {
+                        this.x += this.vx;
+                        this.y += this.vy;
+                        this.life--;
+                        this.alpha -= 0.005;
+
+                        // Wobble
+                        this.x += Math.sin(this.life * 0.1) * 0.5;
+
+                        if (this.y < -50 || this.life < 0 || this.alpha <= 0) {
+                            this.reset();
+                        }
+                    }
+
+                    draw() {
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fillStyle = this.color.replace(`0, ${this.alpha})`, `0, ${Math.max(0, this.alpha)})`);
+                        ctx.fill();
+
+                        // Glow
+                        ctx.shadowBlur = 10;
+                        ctx.shadowColor = "orange";
+                    }
+                }
+
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push(new Particle());
+                }
+
+                const animate = () => {
+                    ctx.clearRect(0, 0, width, height);
+                    // Add a slight trail effect
+                    // ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                    // ctx.fillRect(0, 0, width, height);
+
+                    particles.forEach(p => {
+                        p.update();
+                        p.draw();
+                    });
+
+                    ctx.shadowBlur = 0; // Reset for performance
+                    requestAnimationFrame(animate);
+                };
+
+                animate();
+
+                const handleResize = () => {
+                    width = canvas.width = window.innerWidth;
+                    height = canvas.height = window.innerHeight;
+                };
+
+                window.addEventListener('resize', handleResize);
+                return () => window.removeEventListener('resize', handleResize);
+            }, []);
+
+            return <canvas ref={canvasRef} className="absolute inset-0 z-0" />;
+        };
+
+        const IntroOverlay = ({ onComplete }) => {
+            const [step, setStep] = useState(0);
+
+            // Sequence: 
+            // 0: Initial black
+            // 1: "1785"
+            // 2: "RẠCH GẦM XOÀI MÚT"
+            // 3: "ĐẠI PHÁ QUÂN XIÊM" (Main Title)
+            // 4: Exit
+
+            useEffect(() => {
+                playFireSound();
+
+                const sequence = async () => {
+                    await new Promise(r => setTimeout(r, 500));
+                    setStep(1); // Show Year
+                    await new Promise(r => setTimeout(r, 1500));
+                    setStep(2); // Show Place
+                    await new Promise(r => setTimeout(r, 2000));
+                    setStep(3); // Show Victory
+                    await new Promise(r => setTimeout(r, 3000));
+                    setStep(4); // Fade out
+                    await new Promise(r => setTimeout(r, 1000));
+                    onComplete();
+                };
+
+                sequence();
+            }, []);
+
+            const textVariants = {
+                hidden: { opacity: 0, scale: 0.8, filter: "blur(10px)" },
+                visible: {
+                    opacity: 1,
+                    scale: 1,
+                    filter: "blur(0px)",
+                    transition: { duration: 0.8, ease: "easeOut" }
+                },
+                exit: {
+                    opacity: 0,
+                    scale: 1.2,
+                    filter: "blur(20px)",
+                    transition: { duration: 0.6 }
+                }
+            };
+
+            return (
+                <motion.div
+                    className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center overflow-hidden"
+                    initial={{ opacity: 1 }}
+                    animate={step === 4 ? { opacity: 0 } : { opacity: 1 }}
+                    transition={{ duration: 1 }}
+                >
+                    <IntroParticles />
+                    <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black opacity-80 z-1"></div>
+
+                    <div className="relative z-10 flex flex-col items-center justify-center text-center p-4">
+                        <AnimatePresence mode="wait">
+                            {step === 1 && (
+                                <motion.div
+                                    key="step1"
+                                    variants={textVariants}
+                                    initial="hidden" animate="visible" exit="exit"
+                                    className="text-8xl md:text-[10rem] font-epic font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-500 tracking-tighter"
+                                >
+                                    1785
+                                </motion.div>
+                            )}
+
+                            {step === 2 && (
+                                <motion.div
+                                    key="step2"
+                                    variants={textVariants}
+                                    initial="hidden" animate="visible" exit="exit"
+                                >
+                                    <h2 className="text-4xl md:text-6xl font-epic font-bold text-royal-gold uppercase tracking-[0.2em] mb-4">
+                                        RẠCH GẦM
+                                    </h2>
+                                    <div className="w-24 h-1 bg-blood-red mx-auto"></div>
+                                    <h2 className="text-4xl md:text-6xl font-epic font-bold text-royal-gold uppercase tracking-[0.2em] mt-4">
+                                        XOÀI MÚT
+                                    </h2>
+                                </motion.div>
+                            )}
+
+                            {step === 3 && (
+                                <motion.div
+                                    key="step3"
+                                    variants={textVariants}
+                                    initial="hidden" animate="visible" exit="exit"
+                                    className="flex flex-col items-center"
+                                >
+                                    <span className="text-gray-400 font-mono text-sm md:text-base tracking-widest uppercase mb-6">Chiến Thắng Lịch Sử</span>
+                                    <h1 className="text-5xl md:text-8xl font-epic font-black text-transparent bg-clip-text bg-gradient-to-r from-[#bf953f] via-[#fcf6ba] to-[#b38728] drop-shadow-[0_0_30px_rgba(212,175,55,0.6)] leading-tight">
+                                        ĐẠI PHÁ<br />QUÂN XIÊM
+                                    </h1>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+                </motion.div>
+            );
+        };
+
+        // --- COMPONENT: TÀU XIÊM (18th Century Ocean Junk) ---
+        const SiamShip = ({ scale = 1, crashed, isTrapped }) => {
+            return (
+                <div className="relative" style={{ transform: `scale(${scale})` }}>
+                    {/* TURNING RADIUS OVERLAY (Red - Huge) */}
+                    <div className="absolute -top-[100px] -left-[100px] w-[300px] h-[300px] rounded-full border border-red-500/30 bg-red-900/10 pointer-events-none flex items-center justify-center">
+                        <span className="text-[8px] text-red-400 font-mono opacity-60 mt-[-200px]">BÁN KÍNH QUAY VÒNG (LỚN)</span>
+                    </div>
+
+                    {/* Ship Body */}
+                    <div className="relative w-32 h-20">
+                        {/* Rear Sail (Fan Shape) */}
+                        {/* Rear Sail (Fan Shape) */}
+                        <div className="absolute bottom-16 right-2 w-16 h-20 bg-[#c4c4c4] shadow-lg border-l border-gray-500 origin-bottom-left transform rotate-6" style={{ clipPath: "polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%)" }}>
+                            {/* Batten Lines */}
+                            {[...Array(5)].map((_, i) => <div key={i} className="absolute w-full h-[1px] bg-gray-600" style={{ top: `${i * 20}%` }}></div>)}
+                        </div>
+
+                        {/* Main Sail (Fan Shape - Massive) */}
+                        <div className="absolute bottom-14 left-4 w-24 h-28 bg-[#d6d6d6] shadow-xl border-l-2 border-gray-600" style={{ clipPath: "polygon(10% 0%, 100% 10%, 90% 100%, 0% 100%)" }}>
+                            {[...Array(6)].map((_, i) => <div key={i} className="absolute w-full h-[1px] bg-gray-500" style={{ top: `${i * 15}%` }}></div>)}
+                            <div className="absolute top-10 left-8 text-black/20 text-md font-black">SIAM</div>
+                        </div>
+
+                        {/* Deck & Hull */}
+                        <div className="absolute bottom-0 w-full h-12 bg-[#3e2723] rounded-b-[30px] border-t-4 border-[#5d4037] shadow-2xl flex items-center justify-center overflow-hidden">
+                            {/* High Poop Deck (Stern) */}
+                            <div className="absolute top-[-10px] right-0 w-10 h-14 bg-[#4e342e] rounded-t-sm border-l border-[#795548]"></div>
+
+                            {/* Side Cannons */}
+                            <div className="flex gap-3 mt-4 opacity-80 z-10">
+                                {[...Array(3)].map((_, c) => <div key={c} className="w-1.5 h-1.5 bg-black rounded-full ring-1 ring-gray-400"></div>)}
+                            </div>
+
+                            {/* Water Line (White/Red) */}
+                            <div className="absolute bottom-2 w-full h-[2px] bg-white/20"></div>
+                        </div>
+                    </div>
+
+                    {/* DAMAGE EFFECTS */}
+                    <AnimatePresence>
+                        {crashed && (
+                            <>
+                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-50">
+                                    {/* Splinters / Debris */}
+                                    {[...Array(6)].map((_, i) => (
+                                        <motion.div key={i}
+                                            className="absolute bg-[#5d4037] w-1 h-3"
+                                            initial={{ x: 50, y: 50, scale: 0 }}
+                                            animate={{ x: Math.random() * 100 - 50, y: Math.random() * -100, rotate: Math.random() * 360, opacity: 0 }}
+                                            transition={{ duration: 1, repeat: Infinity, delay: Math.random() }}
+                                        />
+                                    ))}
+                                    {/* Smoke */}
+                                    <div className="absolute -top-10 left-10 w-20 h-20 bg-gray-500/40 rounded-full blur-xl animate-pulse"></div>
+                                </motion.div>
+                            </>
+                        )}
+                    </AnimatePresence>
+                </div>
+            );
+        };
+
+        // --- COMPONENT: THUYỀN TÂY SƠN (Agile, Small) ---
+        const TaySonBoat = () => (
+            <div className="relative group">
+                <div className="absolute -top-8 -left-8 w-24 h-24 rounded-full border border-blue-400/50 bg-blue-500/10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-[6px] text-blue-300 absolute bottom-0 left-1/2 -translate-x-1/2">AGILITY</span>
+                </div>
+                <div className="w-12 h-4 bg-black rounded-full relative flex items-center justify-center">
+                    <div className="absolute bottom-2 w-0.5 h-6 bg-yellow-600"></div>
+                    <div className="absolute bottom-3 w-6 h-5 bg-blood-red" style={{ clipPath: "polygon(0% 0%, 100% 50%, 0% 100%)" }}></div>
+                </div>
+            </div>
+        );
+
+        const TideSimulation = () => {
+            const [tideLevel, setTideLevel] = useState(100);
+            const [windSpeed, setWindSpeed] = useState(0); // -10 to 10
+            const [isPlaying, setIsPlaying] = useState(false);
+            const [ships, setShips] = useState([
+                { id: 0, x: 25, y: 90, crashed: false, drift: 0 },
+                { id: 1, x: 50, y: 90, crashed: false, drift: 0 },
+                { id: 2, x: 75, y: 90, crashed: false, drift: 0 }
+            ]);
+
+            // Logic Constants
+            const GROUND_LEVEL = 25;
+            const TRAP_LEVEL = 30;
+
+            useEffect(() => {
+                if (!isPlaying) return;
+
+                const interval = setInterval(() => {
+                    setShips(prevShips => prevShips.map(ship => {
+                        if (ship.crashed) return ship;
+
+                        // Physics
+                        let newY = tideLevel - 10;
+                        let newX = ship.x + (windSpeed * 0.05) + ship.drift;
+
+                        // Grounding Check
+                        let isCrashed = false;
+                        if (newY <= GROUND_LEVEL) {
+                            newY = GROUND_LEVEL;
+                            isCrashed = true;
+                            playCrunchSound();
+                        }
+
+                        return { ...ship, x: newX, y: newY, crashed: isCrashed };
+                    }));
+                }, 1000 / 30); // 30 FPS
+
+                return () => clearInterval(interval);
+            }, [isPlaying, tideLevel, windSpeed]);
+
+            // Sync simulation with slider when not playing manually
+            useEffect(() => {
+                if (!isPlaying) {
+                    setShips(prev => prev.map((s, i) => {
+                        let newY = tideLevel - 10;
+                        let crashed = false;
+                        if (newY <= GROUND_LEVEL) { newY = GROUND_LEVEL; crashed = true; }
+                        let newX = 25 + (i * 25);
+                        return { ...s, y: newY, x: newX, crashed };
+                    }));
+                }
+            }, [tideLevel, isPlaying]);
+
+            const handleTogglePlay = () => setIsPlaying(!isPlaying);
+
+            // --- AMBUSH ARROWS COMPONENT ---
+            const AmbushArrows = () => (
+                <div className="absolute inset-0 pointer-events-none z-40 overflow-hidden">
+                    {[...Array(15)].map((_, i) => (
+                        <motion.div
+                            key={i}
+                            className="absolute h-0.5 bg-white drop-shadow-[0_0_5px_white]"
+                            style={{
+                                top: `${Math.random() * 80 + 10}%`,
+                                left: i % 2 === 0 ? "-10%" : "110%",
+                                width: "40px"
+                            }}
+                            animate={{
+                                x: i % 2 === 0 ? ["0vw", "40vw"] : ["0vw", "-40vw"],
+                                y: i % 2 === 0 ? [0, 50] : [0, 50],
+                                opacity: [0, 1, 0]
+                            }}
+                            transition={{
+                                duration: Math.random() * 0.5 + 0.5,
+                                repeat: Infinity,
+                                repeatDelay: Math.random() * 0.5,
+                                ease: "linear"
+                            }}
+                        >
+                            <div className={`absolute w-2 h-2 border-t-2 border-r-2 border-white transform rotate-45 ${i % 2 === 0 ? 'right-0' : 'left-0 rotate-[225deg]'}`}></div>
+                        </motion.div>
+                    ))}
+                </div>
+            );
+
+            return (
+                <section className="py-24 px-4 bg-[#050a0e] border-t border-royal-gold/20 relative overflow-hidden">
+                    {/* Background Grids */}
+                    <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:50px_50px] opacity-20"></div>
+
+                    <div className="max-w-6xl mx-auto z-10 relative">
+                        <div className="text-center mb-12">
+                            <h3 className="text-3xl md:text-5xl font-epic font-black mt-2 text-white drop-shadow-lg">MÔ PHỎNG VẬT LÝ CHIẾN TRƯỜNG</h3>
+                            <span className="text-royal-gold font-bold tracking-[0.3em] uppercase text-sm block mt-2">BẪY THỦY TRIỀU & HỎA CÔNG</span>
+                            <div className="w-24 h-1 bg-royal-gold mx-auto my-6"></div>
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                            {/* Controls Panel */}
+                            <div className="col-span-1 space-y-6 flex flex-col justify-center bg-black/80 p-6 rounded-lg border border-royal-gold/40 backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+                                <h4 className="text-royal-gold font-bold border-b border-royal-gold/30 pb-2 mb-4">THAM SỐ MÔI TRƯỜNG</h4>
+
+                                {/* Tide Control */}
+                                <div>
+                                    <div className="flex justify-between items-end mb-2">
+                                        <label className="text-gray-400 font-mono text-xs font-bold">MỰC NƯỚC</label>
+                                        <span className="text-royal-gold font-mono font-bold">{tideLevel}%</span>
+                                    </div>
+                                    <input
+                                        type="range" min="0" max="100"
+                                        value={tideLevel}
+                                        onChange={(e) => setTideLevel(Number(e.target.value))}
+                                        className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-royal-gold"
+                                    />
+                                </div>
+
+                                {/* Wind Control */}
+                                <div>
+                                    <div className="flex justify-between items-end mb-2">
+                                        <label className="text-gray-400 font-mono text-xs font-bold">SỨC GIÓ</label>
+                                        <span className="text-blue-400 font-mono font-bold">{windSpeed > 0 ? `+${windSpeed}` : windSpeed} m/s</span>
+                                    </div>
+                                    <input
+                                        type="range" min="-10" max="10"
+                                        value={windSpeed}
+                                        onChange={(e) => setWindSpeed(Number(e.target.value))}
+                                        className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                                    />
+                                </div>
+
+                                {/* Status Monitor */}
+                                <div className={`p-4 rounded border-l-4 transition-all duration-300 ${tideLevel < 30 ? 'bg-red-900/20 border-red-500' : 'bg-blue-900/20 border-blue-500'}`}>
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <div className={`w-2 h-2 rounded-full ${tideLevel < 30 ? 'bg-red-500 animate-ping' : 'bg-blue-500'}`}></div>
+                                        <span className={`font-bold font-mono text-xs ${tideLevel < 30 ? 'text-red-400' : 'text-blue-400'}`}>
+                                            TRẠNG THÁI: {tideLevel < 30 ? 'NGUY HIỂM (MẮC CẠN)' : 'BÌNH THƯỜNG'}
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-gray-400 leading-relaxed">
+                                        {tideLevel < 30
+                                            ? "THỦY TRIỀU RÚT CẠN. Tàu địch bị dồn ép vào giữa dòng, va chạm đá ngầm. ĐỘI HÌNH VỠ."
+                                            : "Dòng chảy ổn định. Hạm đội địch di chuyển tự do."}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Simulation Area */}
+                            <div className="col-span-1 lg:col-span-3 bg-[#020406] rounded-lg overflow-hidden border border-white/10 shadow-inner relative flex flex-col min-h-[500px]">
+
+                                {/* 1. UPPER VISUALIZATION Area (Map/Scene) */}
+                                <div className="flex-1 relative overflow-hidden bg-gradient-to-b from-[#1a202c] to-[#0d161f]">
+
+                                    {/* Grid Overlay */}
+                                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/graphy.png')] opacity-10"></div>
+
+                                    {/* Ambush Arrows when trapped */}
+                                    <AnimatePresence>
+                                        {tideLevel < TRAP_LEVEL && <AmbushArrows />}
+                                    </AnimatePresence>
+
+                                    {/* Sông & Đá Ngầm */}
+                                    <div className="absolute bottom-0 w-full h-full">
+                                        {/* Rocks fixed at bottom */}
+                                        <div className="absolute bottom-0 left-[20%] w-[15%] h-[25%] bg-stone-800 opacity-80 z-10" style={{ clipPath: "polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)" }} />
+                                        <div className="absolute bottom-0 left-[45%] w-[10%] h-[30%] bg-stone-700 opacity-90 z-10" style={{ clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)" }} />
+                                        <div className="absolute bottom-0 left-[70%] w-[15%] h-[20%] bg-stone-800 opacity-80 z-10" style={{ clipPath: "polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%)" }} />
+
+                                        {/* Water Surface (Multi-Layer) */}
+                                        <motion.div
+                                            className={`absolute inset-x-0 bottom-0 z-20 flex items-end pointer-events-none transition-colors duration-1000 ${tideLevel < 30 ? 'bg-red-900/30' : 'bg-blue-600/20'}`}
+                                            animate={{ height: `${tideLevel}%` }}
+                                        >
+                                            <div className="absolute top-0 w-full h-[2px] bg-white/30 animate-pulse box-shadow-[0_0_10px_white]"></div>
+                                            <div className="absolute top-2 w-full h-full bg-gradient-to-b from-transparent to-black/50"></div>
+                                        </motion.div>
+                                    </div>
+
+                                    {/* SHIPS RENDER */}
+                                    <AnimatePresence>
+                                        {ships.map((ship) => (
+                                            <motion.div
+                                                key={ship.id}
+                                                className="absolute z-30 origin-bottom"
+                                                style={{ left: `${ship.x}%`, bottom: `${ship.y}%`, x: "-50%" }}
+                                                animate={{
+                                                    y: ship.crashed ? [0, 2, -2, 0] : [0, -2, 0], // Shake if crashed
+                                                    rotate: ship.crashed ? (ship.id % 2 === 0 ? -15 : 10) : Math.sin(Date.now() / 1000 + ship.id) * 2 + (windSpeed),
+                                                }}
+                                                transition={{ duration: 0.1 }}
+                                            >
+                                                <SiamShip scale={ship.id === 1 ? 1.2 : 0.9} crashed={ship.crashed} isTrapped={tideLevel < 30} />
+
+                                                {/* Fire Effect on Crash */}
+                                                {ship.crashed && (
+                                                    <div className="absolute bottom-[-10px] left-1/2 -translate-x-1/2 w-48 h-64 pointer-events-none z-50">
+                                                        <RealisticFire />
+                                                    </div>
+                                                )}
+
+                                                {/* HP Bar */}
+                                                <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-16 h-1 bg-black/50 rounded overflow-hidden">
+                                                    <div className={`h-full ${ship.crashed ? 'bg-red-600 w-0' : 'bg-green-500 w-full'} transition-all duration-300`}></div>
+                                                </div>
+                                            </motion.div>
+                                        ))}
+                                    </AnimatePresence>
+                                </div>
+
+                                {/* 2. RIVERBED CROSS-SECTION (Analysis Chart) */}
+                                <div className="h-[150px] bg-black border-t border-royal-gold/20 relative p-4 font-mono text-xs">
+                                    <div className="absolute top-2 left-2 text-royal-gold font-bold flex items-center gap-2">
+                                        <span className="material-symbols-outlined text-sm">analytics</span>
+                                        MẮT CẮT LÒNG SÔNG
+                                    </div>
+
+                                    {/* Chart Container */}
+                                    <div className="w-full h-full relative mt-4 border border-white/5 bg-white/5 rounded">
+                                        {[0, 25, 50, 75, 100].map(p => (
+                                            <div key={p} className="absolute left-0 w-full border-t border-white/5" style={{ bottom: `${p}%` }}>
+                                                <span className="absolute -left-0 -top-2 text-gray-600 text-[9px] pl-1">{p}m</span>
+                                            </div>
+                                        ))}
+
+                                        {/* Dangerous Rock Level Line */}
+                                        <div className="absolute left-0 w-full border-t-2 border-red-500/50 border-dashed bottom-[25%] z-0">
+                                            <span className="text-red-500 bg-black px-1 absolute right-0 -top-3 text-[10px]">NGƯỠNG NGUY HIỂM</span>
+                                        </div>
+
+                                        {/* Dynamic Water Level */}
+                                        <motion.div
+                                            className="absolute left-0 w-full bg-blue-500/10 border-t border-blue-400/50 transition-all duration-75 relative"
+                                            style={{ height: `${tideLevel}%`, bottom: 0 }}
+                                        >
+                                            <div className="absolute right-2 top-0 text-blue-300 text-[10px] bg-black/50 px-1 rounded">Mực nước: {tideLevel}m</div>
+                                        </motion.div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+        // --- COMPONENT MỚI 2: PHÂN TÍCH ĐỊA HÌNH (Cards) ---
+        const TerrainDetails = () => {
+            const terrains = [
+                {
+                    icon: "landscape",
+                    title: "Cù Lao Thới Sơn",
+                    sub: "LÁ CHẮN TỰ NHIÊN",
+                    desc: "Nằm giữa sông Tiền, cù lao này chia dòng sông làm hai nhánh. Nguyễn Huệ giấu quân chủ lực và đại bác ở đây để bắn kẹp sườn (flanking) vào đội hình địch."
+                },
+                {
+                    icon: "water_lock",
+                    title: "Sông Rạch Gầm",
+                    sub: "TÚI ĐỰNG QUÂN",
+                    desc: "Đoạn sông phình to ở giữa nhưng thắt lại ở hai đầu. Khi quân địch lọt vào, chúng bị ùn ứ, tàu to không quay đầu được, trở thành bia tập bắn."
+                },
+                {
+                    icon: "forest",
+                    title: "Rừng Dừa Nước",
+                    sub: "ÁO TÀNG HÌNH",
+                    desc: "Hai bên bờ là rừng rậm rạp, che giấu hoàn toàn hàng vạn quân mai phục. Địch đi qua mà không hề hay biết cho đến khi súng nổ."
+                }
+            ];
+
+            return (
+                <section className="py-20 bg-paper-texture bg-paper text-ink-black relative">
+                    <div className="max-w-6xl mx-auto px-4">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {terrains.map((t, i) => (
+                                <div key={i} className="group relative bg-white/80 p-6 border-2 border-ink-black hover:-translate-y-2 transition-all duration-300 shadow-lg hover:shadow-2xl cursor-pointer overflow-hidden">
+                                    {/* Hiệu ứng Hover nền */}
+                                    <div className="absolute inset-0 bg-royal-gold transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left z-0"></div>
+
+                                    <div className="relative z-10 group-hover:text-white transition-colors">
+                                        <div className="w-12 h-12 border-2 border-ink-black group-hover:border-white rounded-full flex items-center justify-center mb-4">
+                                            <span className="material-symbols-outlined text-2xl">{t.icon}</span>
+                                        </div>
+                                        <span className="text-xs font-bold tracking-widest uppercase text-blood-red group-hover:text-black mb-2 block">{t.sub}</span>
+                                        <h3 className="text-2xl font-epic font-bold mb-3">{t.title}</h3>
+                                        <p className="font-poetry text-sm leading-relaxed opacity-80">{t.desc}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // --- NEW CINEMATIC COMPONENTS ---
+
+        // 1. Custom Cursor (Optimized with useMotionValue)
+        const CustomCursor = () => {
+            if (!useMotionValue) return null;
+
+            const mouseX = useMotionValue(0);
+            const mouseY = useMotionValue(0);
+
+            useEffect(() => {
+                const moveCursor = (e) => {
+                    mouseX.set(e.clientX);
+                    mouseY.set(e.clientY);
+                };
+                window.addEventListener('mousemove', moveCursor);
+                return () => window.removeEventListener('mousemove', moveCursor);
+            }, []);
+
+            return (
+                <>
+                    <style>{`
+                * { cursor: none !important; }
+                .custom-cursor {
+                    pointer-events: none;
+                    z-index: 9999;
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    mix-blend-mode: exclusion;
+                }
+            `}</style>
+
+                    <motion.div
+                        className="custom-cursor w-6 h-6 bg-white rounded-full"
+                        style={{
+                            x: mouseX,
+                            y: mouseY,
+                            translateX: "-50%",
+                            translateY: "-50%",
+                        }}
+                    />
                 </>
             );
         };
 
-        const Hero = () => {
-            return (
-                <section className="hero">
-                    <video
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        src="./nh.mp4"
-                    >
-                        Your browser does not support the video tag.
-                    </video>
-                    <div className="hero-content">
-                        <FadeSection>
-                            <h1 className="hero-title">HÀO KHÍ TÂY SƠN</h1>
-                            <div className="hero-subtitle">RẠCH GẦM 1785</div>
-                        </FadeSection>
-                    </div>
-                </section>
-            );
+
+        // 2. Cinematic Fog (Canvas Based)
+        const CinematicFog = () => {
+            const canvasRef = useRef(null);
+
+            useEffect(() => {
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
+                let width = canvas.width = window.innerWidth;
+                let height = canvas.height = window.innerHeight;
+
+                const particles = [];
+                const maxParticles = 50;
+
+                for (let i = 0; i < maxParticles; i++) {
+                    particles.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        vx: Math.random() * 0.5 - 0.25,
+                        vy: Math.random() * 0.2 - 0.1,
+                        size: Math.random() * 100 + 50,
+                        alpha: Math.random() * 0.3 + 0.1
+                    });
+                }
+
+                const animate = () => {
+                    ctx.clearRect(0, 0, width, height);
+
+                    particles.forEach(p => {
+                        p.x += p.vx;
+                        p.y += p.vy;
+
+                        if (p.x < -p.size) p.x = width + p.size;
+                        if (p.x > width + p.size) p.x = -p.size;
+                        if (p.y < -p.size) p.y = height + p.size;
+                        if (p.y > height + p.size) p.y = -p.size;
+
+                        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
+                        gradient.addColorStop(0, `rgba(200, 200, 200, ${p.alpha})`);
+                        gradient.addColorStop(1, 'rgba(200, 200, 200, 0)');
+
+                        ctx.fillStyle = gradient;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+
+                    requestAnimationFrame(animate);
+                };
+
+                animate();
+
+                const handleResize = () => {
+                    width = canvas.width = window.innerWidth;
+                    height = canvas.height = window.innerHeight;
+                };
+                window.addEventListener('resize', handleResize);
+                return () => window.removeEventListener('resize', handleResize);
+
+            }, []);
+
+            return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-10 opacity-30 mix-blend-screen" />;
         };
 
-        const MapSection = () => {
+        // --- RESTORED COMPONENT: EmberParticles (Used in Timeline) ---
+        const EmberParticles = () => {
             return (
-                <section className="section">
-                    <div className="container">
-                        <FadeSection>
-                            <h2 className="section-title">Chiến Địa / The Battlefield</h2>
-                            <div className="text-content">
-                                <p>
-                                    Trận Rạch Gầm - Xoài Mút là một trong những trận thủy chiến lẫy lừng nhất trong lịch sử chống ngoại xâm của dân tộc Việt Nam.
-                                    Dưới sự chỉ huy tài tình của Nguyễn Huệ, quân Tây Sơn đã lợi dụng địa thế hiểm trở của đoạn sông Rạch Gầm - Xoài Mút
-                                    để đánh tan 5 vạn quân Xiêm - Nguyễn chỉ trong một ngày.
-                                </p>
-                            </div>
-                        </FadeSection>
-
-                        <FadeSection delay={0.3}>
-                            <div className="map-container">
-                                <img
-                                    src="./luoc_do_tran_rach_gam__xoai_mut__400.jpg.jpg"
-                                    alt="Lược đồ trận Rạch Gầm - Xoài Mút"
-                                    className="map-image"
-                                />
-                            </div>
-                            <div className="text-content" style={{textAlign: 'center', fontSize: '0.9rem', color: '#aaa'}}>
-                                <em>Lược đồ diễn biến trận đánh</em>
-                            </div>
-                        </FadeSection>
-                    </div>
-                </section>
-            );
-        };
-
-        const Footer = () => (
-             <footer style={{padding: '50px 0', textAlign: 'center', borderTop: '1px solid var(--color-gold)', color: '#888'}}>
-                <p>© 2023 Hào Khí Tây Sơn Presentation</p>
-             </footer>
-        );
-
-        const App = () => {
-            return (
-                <div>
-                    <Hero />
-                    <MapSection />
-                    <Footer />
-                    <AudioPlayer />
+                <div className="absolute inset-0 overflow-hidden pointer-events-none z-20">
+                    {[...Array(20)].map((_, i) => (
+                        <motion.div
+                            key={i}
+                            className="absolute bg-orange-500 rounded-full"
+                            initial={{
+                                x: Math.random() * 100 + "%",
+                                y: "100%",
+                                opacity: 1,
+                                scale: Math.random() * 0.5 + 0.5
+                            }}
+                            animate={{
+                                y: "-10%",
+                                opacity: 0,
+                                x: `calc(${Math.random() * 100}% + ${Math.random() * 200 - 100}px)`
+                            }}
+                            transition={{
+                                duration: Math.random() * 3 + 2,
+                                repeat: Infinity,
+                                ease: "linear",
+                                delay: Math.random() * 5
+                            }}
+                            style={{
+                                width: Math.random() * 4 + 2 + "px",
+                                height: Math.random() * 4 + 2 + "px",
+                                boxShadow: "0 0 10px #ff4500"
+                            }}
+                        />
+                    ))}
                 </div>
+            );
+        };
+
+        // 3. Realistic Fire Effect (Multi-layered)
+        const RealisticFire = () => {
+            return (
+                <div className="absolute inset-0 z-50 pointer-events-none" style={{ mixBlendMode: 'screen' }}>
+                    {/* Dark Smoke Layer (Base) */}
+                    {[...Array(15)].map((_, i) => (
+                        <motion.div
+                            key={`smoke-${i}`}
+                            className="absolute bottom-0 bg-gray-900 rounded-full blur-xl opacity-60"
+                            initial={{
+                                x: "50%",
+                                y: "20%",
+                                scale: 0.5,
+                                opacity: 0
+                            }}
+                            animate={{
+                                x: [`${50 + (Math.random() * 40 - 20)}%`, `${50 + (Math.random() * 100 - 50)}%`],
+                                y: ["20%", "-150%"],
+                                scale: [1, 3],
+                                opacity: [0.6, 0]
+                            }}
+                            transition={{
+                                duration: Math.random() * 2 + 2,
+                                repeat: Infinity,
+                                ease: "easeOut",
+                                delay: Math.random() * 2
+                            }}
+                            style={{
+                                width: Math.random() * 40 + 30 + "px",
+                                height: Math.random() * 40 + 30 + "px",
+                            }}
+                        />
+                    ))}
+
+                    {/* Orange/Red Flame Core (Middle) */}
+                    {[...Array(25)].map((_, i) => (
+                        <motion.div
+                            key={`flame-main-${i}`}
+                            className="absolute bottom-0 bg-gradient-to-t from-red-600 via-orange-500 to-yellow-400 rounded-full blur-md"
+                            initial={{
+                                x: "50%",
+                                y: "10%",
+                                scale: 0.8,
+                                opacity: 0
+                            }}
+                            animate={{
+                                x: [`${50 + (Math.random() * 20 - 10)}%`, `${50 + (Math.random() * 60 - 30)}%`],
+                                y: ["10%", "-80%"],
+                                scale: [1, 0],
+                                opacity: [0.8, 0]
+                            }}
+                            transition={{
+                                duration: Math.random() * 1 + 0.5,
+                                repeat: Infinity,
+                                ease: "circOut",
+                                delay: Math.random()
+                            }}
+                            style={{
+                                width: Math.random() * 25 + 15 + "px",
+                                height: Math.random() * 25 + 15 + "px",
+                                left: "-10%"
+                            }}
+                        />
+                    ))}
+
+                    {/* Bright Yellow Sparks (Top) */}
+                    {[...Array(20)].map((_, i) => (
+                        <motion.div
+                            key={`spark-${i}`}
+                            className="absolute bottom-0 bg-white rounded-full"
+                            initial={{
+                                x: "50%",
+                                y: "20%",
+                                opacity: 1
+                            }}
+                            animate={{
+                                y: "-120%",
+                                x: `calc(50% + ${Math.random() * 100 - 50}px)`,
+                                opacity: [1, 0]
+                            }}
+                            transition={{
+                                duration: Math.random() * 1 + 0.5,
+                                repeat: Infinity,
+                                ease: "linear",
+                                delay: Math.random()
+                            }}
+                            style={{
+                                width: Math.random() * 3 + 1 + "px",
+                                height: Math.random() * 3 + 1 + "px",
+                                boxShadow: "0 0 5px #fff"
+                            }}
+                        />
+                    ))}
+                </div>
+            );
+        };
+
+        // 4. Generals Profile (3D Tilt Cards - No Change)
+        const GeneralsProfile = () => {
+            const generals = [
+                {
+                    name: "NGUYỄN HUỆ",
+                    role: "Long Nhương Tướng Quân",
+                    desc: "Thiên tài quân sự, người vạch ra kế hoạch Rạch Gầm - Xoài Mút độc đáo, nghiền nát 5 vạn quân Xiêm trong chưa đầy một ngày.",
+                    stats: { intel: 100, courage: 100, command: 100 },
+                    color: "from-yellow-700 to-yellow-900"
+                },
+                {
+                    name: "TRẦN QUANG DIỆU",
+                    role: "Đô Đốc",
+                    desc: "Dũng tướng tiên phong, chỉ huy lực lượng bộ binh mai phục, chặn đường rút lui của địch lên bờ.",
+                    stats: { intel: 85, courage: 95, command: 90 },
+                    color: "from-red-700 to-red-900"
+                },
+                {
+                    name: "VÕ VĂN DŨNG",
+                    role: "Đô Đốc",
+                    desc: "Chỉ huy thủy quân Tây Sơn, trực tiếp cầm lái những mũi thuyền cảm tử lao vào đội hình địch.",
+                    stats: { intel: 90, courage: 90, command: 85 },
+                    color: "from-blue-700 to-blue-900"
+                }
+            ];
+
+            const TiltCard = ({ data }) => {
+                const x = useMotionValue(0);
+                const y = useMotionValue(0);
+
+                // Smoother spring physics
+                const mouseX = window.Motion.useSpring(x, { stiffness: 500, damping: 30 });
+                const mouseY = window.Motion.useSpring(y, { stiffness: 500, damping: 30 });
+
+                const rotateX = useTransform(mouseY, [-100, 100], [15, -15]);
+                const rotateY = useTransform(mouseX, [-100, 100], [-15, 15]);
+
+                function handleMouse(event) {
+                    const rect = event.currentTarget.getBoundingClientRect();
+                    x.set(event.clientX - rect.left - rect.width / 2);
+                    y.set(event.clientY - rect.top - rect.height / 2);
+                }
+
+                return (
+                    <motion.div
+                        className="perspective-1000 relative h-96 w-full cursor-pointer"
+                        onMouseMove={handleMouse}
+                        onMouseLeave={() => { x.set(0); y.set(0); }}
+                        style={{ perspective: 1000 }}
+                    >
+                        <motion.div
+                            className={`w-full h-full rounded-xl bg-gradient-to-br ${data.color} p-1 shadow-xl overflow-hidden border border-white/10`}
+                            style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+                            whileHover={{ scale: 1.05 }}
+                        >
+                            <div className="absolute inset-0 bg-black/40" style={{ transform: "translateZ(0px)" }}></div>
+                            <div className="relative h-full bg-black/80 rounded-lg p-6 flex flex-col items-center text-center backdrop-blur-sm" style={{ transform: "translateZ(30px)" }}>
+                                <motion.div
+                                    className="w-20 h-20 rounded-full bg-gradient-to-t from-gray-200 to-gray-400 mb-4 border-2 border-royal-gold shadow-[0_0_15px_rgba(212,175,55,0.5)] flex items-center justify-center text-3xl font-black text-black"
+                                    whileHover={{ scale: 1.1, rotate: 360, transition: { duration: 0.8 } }}
+                                >
+                                    {data.name.charAt(0)}
+                                </motion.div>
+                                <h3 className="text-2xl font-epic font-bold text-white mb-1">{data.name}</h3>
+                                <span className="text-royal-gold font-mono text-xs uppercase tracking-widest mb-4 block">{data.role}</span>
+                                <p className="text-gray-300 text-sm leading-relaxed mb-6">{data.desc}</p>
+                                <div className="w-full space-y-2 mt-auto">
+                                    {Object.entries(data.stats).map(([key, val]) => {
+                                        const mapKeyToVN = {
+                                            intel: "Trí Tuệ",
+                                            courage: "Dũng Cảm",
+                                            command: "Chỉ Huy"
+                                        };
+                                        return (
+                                            <div key={key} className="flex items-center gap-2 text-xs font-mono text-gray-500 uppercase">
+                                                <span className="w-16 text-right">{mapKeyToVN[key]}</span>
+                                                <div className="flex-1 h-1 bg-gray-700 rounded-full overflow-hidden">
+                                                    <motion.div
+                                                        initial={{ width: 0 }}
+                                                        whileInView={{ width: `${val}%` }}
+                                                        transition={{ duration: 1, delay: 0.5 }}
+                                                        className="h-full bg-royal-gold"
+                                                    />
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent pointer-events-none mix-blend-overlay" style={{ transform: "translateZ(50px)" }}></div>
+                        </motion.div>
+                    </motion.div>
+                );
+            };
+
+            return (
+                <section className="py-24 bg-[#0a0f14] relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+                    <CinematicFog />
+                    <div className="max-w-6xl mx-auto px-4 relative z-10">
+                        <div className="text-center mb-16">
+                            <span className="text-blue-500 font-bold tracking-[0.3em] uppercase text-sm">Bộ Chỉ Huy</span>
+                            <h3 className="text-4xl md:text-6xl font-epic font-black mt-2 text-white uppercase drop-shadow-lg">Hùng Tài Đại Lược</h3>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            {generals.map((g, i) => <TiltCard key={i} data={g} />)}
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+        // --- COMPONENT MỚI: TIDE CLOCK (Đồng Hồ Thủy Triều) ---
+        const TideClock = () => {
+            return (
+                <section className="py-20 bg-ink-black relative border-t border-royal-gold/20">
+                    <div className="max-w-4xl mx-auto px-4">
+                        <div className="text-center mb-12">
+                            <span className="text-blue-400 font-bold tracking-[0.3em] uppercase text-sm">Thiên Thời</span>
+                            <h3 className="text-3xl md:text-5xl font-epic font-black mt-2 text-white uppercase">Nhịp Đập Dòng Sông</h3>
+                            <p className="mt-4 text-gray-400 italic">"Nguyễn Huệ đã tính toán chính xác chu kỳ con nước để biến nó thành vũ khí hủy diệt."</p>
+                        </div>
+
+                        {/* Chart Container */}
+                        <div className="relative h-64 bg-[#0a1016] rounded-xl border border-royal-gold/30 p-6 overflow-hidden">
+                            {/* Grid Lines */}
+                            <div className="absolute inset-0 grid grid-cols-12 gap-0 border-b border-royal-gold/10">
+                                {[...Array(12)].map((_, i) => (
+                                    <div key={i} className="border-r border-royal-gold/5 h-full relative">
+                                        <span className="absolute bottom-1 left-1 text-[8px] text-gray-600">{i * 2}h</span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Tide Sine Wave */}
+                            <svg className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none">
+                                <motion.path
+                                    d="M0,150 C100,20 200,20 300,150 C400,280 500,280 600,150 C700,20 800,20 900,150 L900,300 L0,300 Z"
+                                    fill="url(#gradientWater)"
+                                    className="opacity-50"
+                                    initial={{ d: "M0,300 L900,300 L0,300 Z" }}
+                                    whileInView={{ d: "M0,150 C150,50 300,50 450,150 C600,250 750,250 900,150 L900,300 L0,300 Z" }}
+                                    transition={{ duration: 2, ease: "easeInOut" }}
+                                />
+                                <defs>
+                                    <linearGradient id="gradientWater" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.6" />
+                                        <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.1" />
+                                    </linearGradient>
+                                </defs>
+                                {/* Tide Line */}
+                                <motion.path
+                                    d="M0,150 C150,50 300,50 450,150 C600,250 750,250 900,150"
+                                    fill="none"
+                                    stroke="#60a5fa"
+                                    strokeWidth="3"
+                                    initial={{ pathLength: 0 }}
+                                    whileInView={{ pathLength: 1 }}
+                                    transition={{ duration: 3, ease: "easeInOut" }}
+                                />
+                            </svg>
+
+                            {/* Event Markers - Absolute positioning based on approximate chart locations */}
+                            {/* High Tide - Entry */}
+                            <div className="absolute top-[20%] left-[20%]">
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 1 }}
+                                    className="flex flex-col items-center group cursor-pointer"
+                                >
+                                    <div className="w-4 h-4 rounded-full bg-blue-500 border-2 border-white animate-pulse"></div>
+                                    <div className="mt-2 bg-black/80 text-blue-300 text-xs px-2 py-1 rounded border border-blue-500/50">
+                                        ĐÊM 19/1: NƯỚC LỚN<br /><span className="text-white">Địch vào trận địa</span>
+                                    </div>
+                                    {/* Vertical Line */}
+                                    <div className="w-[1px] h-20 bg-blue-500/30"></div>
+                                </motion.div>
+                            </div>
+
+                            {/* Low Tide - Ambush */}
+                            <div className="absolute bottom-[20%] left-[60%]">
+                                <motion.div
+                                    initial={{ opacity: 0, y: -10 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 2 }}
+                                    className="flex flex-col items-center group cursor-pointer"
+                                >
+                                    {/* Vertical Line Upwards */}
+                                    <div className="w-[1px] h-20 bg-red-500/30 mb-2"></div>
+                                    <div className="bg-black/80 text-red-400 text-xs px-2 py-1 rounded border border-red-500/50 mb-2">
+                                        SÁNG 20/1: NƯỚC RÒNG<br /><span className="text-white">Tổng phản công</span>
+                                    </div>
+                                    <div className="w-4 h-4 rounded-full bg-red-600 border-2 border-royal-gold animate-bounce"></div>
+                                </motion.div>
+                            </div>
+                        </div>
+
+                        {/* Explanation */}
+                        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                            <div className="bg-blue-900/10 p-4 rounded border-l-2 border-blue-500">
+                                <h4 className="font-bold text-blue-400 mb-1">NƯỚC LỚN (Đêm)</h4>
+                                <p className="text-gray-400">Dòng nước chảy mạnh vào trong, giúp pháo hạm nặng nề của Xiêm lướt nhanh vào cạm bẫy mà không tốn sức, khiến chúng chủ quan.</p>
+                            </div>
+                            <div className="bg-red-900/10 p-4 rounded border-l-2 border-red-500">
+                                <h4 className="font-bold text-red-500 mb-1">NƯỚC RÒNG (Sáng)</h4>
+                                <p className="text-gray-400">Nước rút nhanh ra biển. Thuyền giặc ngược dòng bị kìm lại, va vào nhau và mắc cạn. Quân Tây Sơn xuôi dòng thả bè lửa.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // --- COMPONENT MỚI: GEO TACTICS (Địa Thế Chiến Thuật) ---
+        const GeoTactics = () => {
+            return (
+                <section className="py-16 bg-[#0c1218] relative overflow-hidden">
+                    {/* Background Compass Decoration */}
+                    <div className="absolute -right-20 top-10 opacity-5 spin-slow">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Compass_rose_brown.svg/1024px-Compass_rose_brown.svg.png" width="400" />
+                    </div>
+
+                    <div className="max-w-6xl mx-auto px-4 relative z-10">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+
+                            {/* Graphic Visualization of the Bottleneck - REPLACED WITH SIMULATION */}
+                            <div className="h-[400px] w-full">
+                                <BottleneckTrap />
+                            </div>
+
+                            {/* Text Info */}
+                            <div>
+                                <span className="text-red-500 font-bold tracking-[0.3em] uppercase text-sm">Địa Lợi</span>
+                                <h3 className="text-4xl font-epic font-black mt-2 text-white">Thế Trận "Bao Tải"</h3>
+                                <p className="mt-6 text-gray-300 leading-relaxed text-lg text-justify font-light">
+                                    Đoạn sông Rạch Gầm - Xoài Mút dài khoảng 7km, có địa thế vô cùng đặc biệt.
+                                    Lòng sông đang rộng bỗng nhiên thắt lại ở eo Xoài Mút, tạo thành hình dáng như một chiếc bao tải.
+                                </p>
+                                <ul className="mt-8 space-y-4">
+                                    <li className="flex gap-4 items-start">
+                                        <span className="material-symbols-outlined text-royal-gold bg-royal-gold/10 p-2 rounded">compress</span>
+                                        <div>
+                                            <h4 className="text-royal-gold font-bold">Điểm Thắt Nút</h4>
+                                            <p className="text-sm text-gray-400">Khi bị tấn công, hàng trăm tàu địch dồn về cửa Xoài Mút chật hẹp, tự va chạm và tắc nghẽn.</p>
+                                        </div>
+                                    </li>
+                                    <li className="flex gap-4 items-start">
+                                        <span className="material-symbols-outlined text-royal-gold bg-royal-gold/10 p-2 rounded">visibility_off</span>
+                                        <div>
+                                            <h4 className="text-royal-gold font-bold">Góc Chết Tầm Nhìn</h4>
+                                            <p className="text-sm text-gray-400">Cù lao Thới Sơn chắn giữa dòng che khuất tầm nhìn, khiến địch không thấy được hạm đội Tây Sơn đang chờ sẵn.</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // --- COMPONENT MỚI: BOTTLENECK TRAP (BẪY BAO TẢI) ---
+        const BottleneckTrap = () => {
+            const [isPlaying, setIsPlaying] = useState(false);
+            const [phase, setPhase] = useState(1); // 1: Entry, 2: Congestion, 3: Chaos
+            const [ships, setShips] = useState([]);
+            const [crashes, setCrashes] = useState([]);
+            const animationRef = useRef(null);
+            const frameCount = useRef(0);
+
+            // Simulation Constants
+            const SPAWN_RATE = 20; // Frames between spawns
+            const RIVER_LENGTH = 100; // Percent
+            const WIDE_WIDTH = 80;
+            const NARROW_WIDTH = 25;
+            const BOTTLENECK_START = 60; // Percent where it narrows
+
+            // Reset Simulation
+            const resetSim = () => {
+                setIsPlaying(false);
+                setShips([]);
+                setCrashes([]);
+                setPhase(1);
+                frameCount.current = 0;
+                if (animationRef.current) cancelAnimationFrame(animationRef.current);
+            };
+
+            const togglePlay = () => {
+                if (isPlaying) {
+                    setIsPlaying(false);
+                    if (animationRef.current) cancelAnimationFrame(animationRef.current);
+                } else {
+                    setIsPlaying(true);
+                }
+            };
+
+            // Game Loop
+            useEffect(() => {
+                if (!isPlaying) return;
+
+                const loop = () => {
+                    frameCount.current++;
+
+                    setShips(prev => {
+                        let newShips = [...prev];
+
+                        // 1. SPAWN SHIPS
+                        if (frameCount.current % SPAWN_RATE === 0 && frameCount.current < 600) {
+                            newShips.push({
+                                id: Date.now() + Math.random(),
+                                x: 0,
+                                y: 50 + (Math.random() * 40 - 20), // Random spread in wide area
+                                speed: 0.5 + Math.random() * 0.1,
+                                status: 'normal', // normal, slow, crashed
+                                lane: Math.random() // For vertical separation visuals
+                            });
+                        }
+
+                        // 2. UPDATE POSITIONS & PHYSICS
+                        newShips = newShips.map(ship => {
+                            if (ship.status === 'crashed') return ship;
+
+                            let nextX = ship.x + ship.speed;
+                            let nextY = ship.y;
+                            let nextSpeed = ship.speed;
+                            let nextStatus = ship.status;
+
+                            // Calculate River Width at current X
+                            let currentRiverWidth = WIDE_WIDTH;
+                            if (nextX > BOTTLENECK_START) {
+                                // Linear narrowing
+                                const progress = Math.min(1, (nextX - BOTTLENECK_START) / 20);
+                                currentRiverWidth = WIDE_WIDTH - (progress * (WIDE_WIDTH - NARROW_WIDTH));
+                            }
+
+                            // Constrain Y to river banks
+                            const bankSize = (100 - currentRiverWidth) / 2;
+                            if (nextY < bankSize + 5) nextY = bankSize + 5; // Top Bank
+                            if (nextY > 100 - bankSize - 5) nextY = 100 - bankSize - 5; // Bottom Bank
+
+                            // Squeeze effect: push towards center as it narrows
+                            if (nextX > BOTTLENECK_START) {
+                                if (nextY > 50) nextY -= 0.1;
+                                if (nextY < 50) nextY += 0.1;
+                                nextSpeed *= 0.98; // Slow down in bottleneck
+                            }
+
+                            // 3. COLLISION / CONGESTION CHECK
+                            // Simple logic: if in narrow part and close to another ship -> CRASH
+                            if (nextX > BOTTLENECK_START + 10) {
+                                const crowding = newShips.filter(s =>
+                                    s.id !== ship.id &&
+                                    Math.abs(s.x - nextX) < 2 &&
+                                    Math.abs(s.y - nextY) < 5
+                                );
+
+                                if (crowding.length > 0) {
+                                    nextStatus = 'crashed';
+                                    // Trigger explosion effect
+                                    setCrashes(prevCrashes => [
+                                        ...prevCrashes,
+                                        { x: nextX, y: nextY, id: Date.now() }
+                                    ]);
+                                }
+                            }
+
+                            return { ...ship, x: nextX, y: nextY, speed: nextSpeed, status: nextStatus };
+                        });
+
+                        // Filter out finished ships
+                        return newShips.filter(s => s.x < 110);
+                    });
+
+                    // Update Phase Text
+                    if (frameCount.current < 200) setPhase(1);
+                    else if (frameCount.current < 450) setPhase(2);
+                    else setPhase(3);
+
+                    animationRef.current = requestAnimationFrame(loop);
+                };
+
+                animationRef.current = requestAnimationFrame(loop);
+                return () => cancelAnimationFrame(animationRef.current);
+            }, [isPlaying]);
+
+            // Render: Embedded Mode for GeoTactics
+            return (
+                <div className="w-full h-full flex flex-col bg-[#050a0e] rounded-xl overflow-hidden border border-royal-gold/20 shadow-2xl">
+                    {/* MINI CONTROL PANEL */}
+                    <div className="flex items-center justify-between bg-[#111827] p-3 border-b border-royal-gold/30 shrink-0">
+                        <button
+                            onClick={togglePlay}
+                            className={`px-3 py-1 rounded text-xs font-bold uppercase tracking-wider transition-all ${isPlaying ? 'bg-red-900 text-white border border-red-500' : 'bg-royal-gold text-black hover:bg-white'}`}
+                        >
+                            {isPlaying ? 'Dừng' : 'Chạy Mô Phỏng'}
+                        </button>
+
+                        <div className="flex-1 text-right ml-2">
+                            <span className={`font-mono text-[10px] md:text-xs font-bold transition-all duration-300 ${phase === 1 ? 'text-green-400' : phase === 2 ? 'text-yellow-400' : 'text-red-500 animate-pulse'
+                                }`}>
+                                {phase === 1 && "GIAI ĐOẠN 1: ĐỊCH VÀO RỌ"}
+                                {phase === 2 && "GIAI ĐOẠN 2: ÙN TẮC CỤC BỘ"}
+                                {phase === 3 && "GIAI ĐOẠN 3: TỔNG TẤN CÔNG!"}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* STAGE CONTAINER */}
+                    <div className="relative flex-1 w-full bg-[#050a0e] overflow-hidden">
+
+                        {/* 1. GEOGRAPHY LAYERS (STATIC) */}
+                        {/* Draw River Shape using ClipPath */}
+                        <div className="absolute inset-0 bg-[#0c1620]">
+                            {/* Top Bank */}
+                            <div
+                                className="absolute top-0 left-0 w-full bg-[#1f2937] border-b-2 border-[#d4af37]"
+                                style={{ height: '100%', clipPath: 'polygon(0 0, 100% 0, 100% 40%, 65% 35%, 0 10%)' }}
+                            >
+                                <div className="absolute bottom-2 left-4 text-white/20 font-bold text-[10px]">BỜ BẮC</div>
+                            </div>
+
+                            {/* Bottom Bank */}
+                            <div
+                                className="absolute bottom-0 left-0 w-full bg-[#1f2937] border-t-2 border-[#d4af37]"
+                                style={{ height: '100%', clipPath: 'polygon(0 100%, 100% 100%, 100% 60%, 65% 65%, 0 90%)' }}
+                            >
+                                <div className="absolute top-2 left-4 text-white/20 font-bold text-[10px]">BỜ NAM</div>
+                            </div>
+                        </div>
+
+                        {/* LABELS */}
+                        <div className="absolute top-1/2 left-4 -translate-y-1/2 text-center z-0 pointer-events-none">
+                            <div className="text-green-500/30 text-2xl font-black">CỬA RỘNG</div>
+                        </div>
+                        <div className="absolute top-1/2 right-4 -translate-y-1/2 text-center z-0 pointer-events-none">
+                            <div className="text-red-500/30 text-2xl font-black">CỬA TỬ</div>
+                        </div>
+
+                        {/* 2. DYNAMIC LAYERS */}
+
+                        {/* SHIPS */}
+                        <AnimatePresence>
+                            {ships.map(ship => (
+                                <motion.div
+                                    key={ship.id}
+                                    className="absolute text-red-600"
+                                    style={{
+                                        left: `${ship.x}%`,
+                                        top: `${ship.y}%`,
+                                        width: '10px',
+                                        height: '10px',
+                                        marginLeft: '-5px',
+                                        marginTop: '-5px'
+                                    }}
+                                    animate={{
+                                        rotate: ship.status === 'crashed' ? Math.random() * 360 : 90,
+                                        scale: ship.status === 'crashed' ? 0.8 : 1
+                                    }}
+                                >
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2L22 22L12 18L2 22L12 2Z" />
+                                    </svg>
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
+
+                        {/* CRASH EXPLOSIONS */}
+                        {crashes.map(crash => (
+                            <motion.div
+                                key={crash.id}
+                                className="absolute w-6 h-6 bg-red-500/50 rounded-full blur-sm"
+                                style={{ left: `${crash.x}%`, top: `${crash.y}%`, x: '-50%', y: '-50%' }}
+                                initial={{ scale: 0, opacity: 1 }}
+                                animate={{ scale: 2, opacity: 0 }}
+                                transition={{ duration: 0.5 }}
+                            />
+                        ))}
+
+                        {/* 3. AMBUSH OVERLAY */}
+                        {phase === 3 && (
+                            <div className="absolute inset-0 pointer-events-none z-20">
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    className="absolute right-[20%] top-[20%] w-24 h-24 border-2 border-red-500/50 rounded-full animate-ping"
+                                ></motion.div>
+
+                                {[1, 2].map(i => (
+                                    <motion.div
+                                        key={i}
+                                        className="absolute"
+                                        style={{ right: '25%', top: `${30 + i * 15}%` }}
+                                        initial={{ x: 30, opacity: 0 }}
+                                        animate={{ x: 0, opacity: 1 }}
+                                        transition={{ repeat: Infinity, duration: 1, delay: i * 0.2 }}
+                                    >
+                                        <span className="material-symbols-outlined text-red-500 text-3xl rotate-180">arrow_right_alt</span>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+
+
+        // --- MAIN APP ---
+        const App = () => {
+            const [introDone, setIntroDone] = useState(false);
+
+            return (
+                <main className="relative bg-[#050a0e] text-gray-200 selection:bg-blood-red selection:text-white cursor-none">
+                    <CustomCursor />
+                    {!introDone && <IntroOverlay onComplete={() => setIntroDone(true)} />}
+
+                    {/* Các thành phần tiện ích cố định */}
+                    <ScrollProgress />
+                    <AudioPlayer />
+
+
+                    {/* Nội dung chính */}
+                    <FadeSection>
+                        <Hero />
+                    </FadeSection>
+
+                    <FadeSection>
+                        <Stats />
+                    </FadeSection>
+
+                    {/* Phần trọng tâm: Đặt StrategyMap và TideSimulation gần nhau để nhấn mạnh mối liên hệ */}
+                    <FadeSection>
+                        <div className="py-10 bg-ink-black text-center relative overflow-hidden">
+                            <CinematicFog />
+                            <div className="relative z-10">
+                                <h2 className="text-3xl font-epic text-royal-gold mb-4">PHÂN TÍCH ĐỊA LỢI & THỦY VĂN</h2>
+                                <p className="text-gray-400 max-w-2xl mx-auto italic">"Yếu tố quyết định chiến thắng không chỉ là con người, mà là việc biến dòng sông thành vũ khí."</p>
+                            </div>
+                        </div>
+                        <StrategyMap />
+                    </FadeSection>
+
+
+
+                    <FadeSection>
+                        <TerrainDetails />
+                    </FadeSection>
+
+                    <FadeSection>
+                        <GeoTactics />
+                    </FadeSection>
+
+                    <FadeSection>
+                        <GeneralsProfile />
+                    </FadeSection>
+
+                    {/* Combine Tide Context */}
+                    <FadeSection>
+                        <TideClock />
+                        <TideSimulation />
+                    </FadeSection>
+
+                    <FadeSection>
+                        <Timeline />
+                    </FadeSection>
+
+                    <FadeSection>
+                        <Arsenal />
+                    </FadeSection>
+
+                    {/* Footer */}
+                    <footer className="py-8 text-center text-gray-600 font-mono text-xs border-t border-white/5 bg-black">
+                        © 2026 PROJECT DECODED 1785 // DESIGNED BY ANDY
+                    </footer>
+                </main>
             );
         };
 
@@ -350,4 +2107,5 @@
         root.render(<App />);
     </script>
 </body>
+
 </html>
